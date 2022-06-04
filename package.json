@@ -1,0 +1,48 @@
+{
+  "name": "@stormkit/serverless",
+  "version": "1.0.0",
+  "description": "Export node.js applications into serverless compatible functions",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch --onlyChanged"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stormkit-io/serverless.git"
+  },
+  "keywords": [
+    "serverless",
+    "stormkit",
+    "aws",
+    "lambda"
+  ],
+  "author": "@stormkit-io",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stormkit-io/serverless/issues"
+  },
+  "homepage": "https://github.com/stormkit-io/serverless#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-typescript": "^7.17.12",
+    "@types/compression": "^1.7.2",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.13",
+    "@types/express-fileupload": "^1.2.2",
+    "@types/jest": "^28.1.0",
+    "body-parser": "^1.20.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "express-fileupload": "^1.4.0",
+    "http-parser-js": "^0.5.6",
+    "http-proxy-middleware": "^2.0.6",
+    "jest": "^28.1.0",
+    "ts-loader": "^9.3.0",
+    "typescript": "^4.7.3",
+    "webpack": "^5.73.0"
+  }
+}
