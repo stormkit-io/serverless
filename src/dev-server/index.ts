@@ -8,27 +8,21 @@ const hostname = process.env.SERVERLESS_HOST || "localhost";
 const port = Number(process.env.SERVERLESS_PORT) || 3030;
 const apiDir = process.env.SERVERLESS_DIR || "api";
 
-class ResponseError extends Error {
-  status?: number;
-}
-
 const readBody = (req: http.IncomingMessage): Promise<string> => {
   const body: string[] = [];
 
   return new Promise((resolve, reject) => {
+    if (req.method?.toLowerCase() === "get") {
+      return resolve("");
+    }
+
     req.on("data", (chunks) => {
       body.push(chunks.toString("utf-8"));
-
-      // Too much POST data, kill the connection!
-      // 2e6 === 2 * Math.pow(10, 6) === 2 * 1000000 ~~~ 2MB
-      if (body.length > 2e6) {
-        const err = new ResponseError("Request body too long");
-        err.status = 400;
-        reject(err);
-      }
     });
 
-    resolve(body.join(""));
+    req.on("end", () => {
+      resolve(body.join(""));
+    });
   });
 };
 
@@ -61,7 +55,7 @@ const normalizeRequest = async (
 };
 
 const rootDir = ((): string => {
-  let dir = path.dirname(require?.main?.filename || process.cwd());
+  let dir = require?.main?.filename || process.cwd();
 
   if (dir.indexOf("node_modules") > -1) {
     return /^(.*?)node_modules/.exec(dir)?.[1] || dir;
@@ -78,41 +72,46 @@ const rootDir = ((): string => {
   return dir;
 })();
 
+const _require =
+  typeof __non_webpack_require__ !== "undefined"
+    ? __non_webpack_require__
+    : require;
+
+const callApi = (
+  api: App,
+  request: NodeRequest,
+  res: http.ServerResponse
+): Promise<void> => {
+  return serverless(api)(request, {}, (_: Error | null, data: NodeResponse) => {
+    res.writeHead(data.status, data.headers);
+    res.write(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
+    res.end();
+  });
+};
+
 const server = http.createServer(async (req, res) => {
   try {
     const request = await normalizeRequest(req);
     const file = matchPath(path.join(rootDir, apiDir), request.path);
 
     if (!file) {
-      const err = new ResponseError("Page not found!");
-      err.status = 404;
-      throw err;
+      try {
+        const api = _require(path.join(rootDir, apiDir, "404")).default;
+        await callApi(api, request, res);
+      } catch {
+        res.writeHead(404, "Page not found");
+        res.end("Page not found!");
+      }
+
+      return;
     }
 
-    const api = require(path.join(file.path, file.name)).default;
-
-    await serverless(api)(request, {}, (_, data) => {
-      res.writeHead(data.status, data.headers);
-      res.write(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
-      res.end();
-    });
+    const api = _require(path.join(file.path, file.name)).default;
+    await callApi(api, request, res);
   } catch (e) {
-    if (e instanceof ResponseError) {
-      res.writeHead(e.status || 500);
-      res.write(e.message);
-      res.end();
-      return;
-    }
-
-    if (e instanceof Error && e.name === "MODULE_NOT_FOUND") {
-      res.writeHead(404);
-      res.write("Page not found");
-      res.end();
-      return;
-    }
-
+    console.error(e);
     res.writeHead(500);
-    res.write(e);
+    res.write("Something went wrong. Check the logs.");
     res.end();
   }
 });

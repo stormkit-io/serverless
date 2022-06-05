@@ -1,5 +1,11 @@
+declare var __non_webpack_require__ = require;
+
+declare type App = (
+  req: http.IncomingMessage,
+  res: http.ServerResponse
+) => void;
+
 declare type Callback = (e: Error | null, data: any) => void;
-declare type SupportedApps = App | Express;
 
 declare interface NodeRequest {
   url: string; // /relative/path?query=value#hash

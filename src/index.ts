@@ -1,7 +1,7 @@
 import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
 
-const serverless = (app: SupportedApps) => {
+const serverless = (app: App) => {
   return stormkitHandler(app);
 };
 

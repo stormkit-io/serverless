@@ -23,7 +23,7 @@ const withQuery = (path: string, query?: QueryStringParameters): string => {
   return `${path}?${new URLSearchParams(query).toString()}`;
 };
 
-export default (app: SupportedApps) =>
+export default (app: App) =>
   async (event: ALBRequest, context: Context, callback: Callback) => {
     // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
     context.callbackWaitsForEmptyEventLoop = false;

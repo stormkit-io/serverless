@@ -3,9 +3,12 @@ import TerserPlugin from "terser-webpack-plugin";
 import path from "path";
 
 const config: Configuration = {
-  entry: "./src/index.ts",
+  entry: {
+    index: "./src/index.ts",
+    "dev-server": "./src/dev-server/index.ts",
+  },
   output: {
-    filename: "serverless.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
     libraryTarget: "commonjs",
   },

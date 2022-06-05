@@ -5,8 +5,6 @@ import { match } from "node-match-path";
 import Request from "./request";
 import Response from "./response";
 
-declare type App = (req: Request, res: Response) => void;
-
 interface WalkFile {
   name: string;
   path: string;
