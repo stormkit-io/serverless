@@ -2,12 +2,12 @@
   "name": "@stormkit/serverless",
   "version": "0.3.1",
   "description": "Export node.js applications into serverless compatible functions",
-  "main": "dist/serverless.js",
-  "types": "types/types.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch --onlyChanged",
-    "build": "webpack",
+    "build": "rm -rf dist/ && webpack && cp types/* dist/",
     "np": "np"
   },
   "repository": {
@@ -37,6 +37,7 @@
     "@types/express": "^4.17.13",
     "@types/express-fileupload": "^1.2.2",
     "@types/jest": "^28.1.0",
+    "@types/node": "^17.0.40",
     "body-parser": "^1.20.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
