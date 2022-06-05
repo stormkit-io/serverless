@@ -1,5 +1,6 @@
 import http from "http";
 import path from "path";
+import fs from "fs";
 import serverless from "../index";
 import { matchPath } from "../utils";
 
@@ -59,10 +60,28 @@ const normalizeRequest = async (
   return request;
 };
 
+const rootDir = ((): string => {
+  let dir = path.dirname(require?.main?.filename || process.cwd());
+
+  if (dir.indexOf("node_modules") > -1) {
+    return /^(.*?)node_modules/.exec(dir)?.[1] || dir;
+  }
+
+  while (dir !== "/") {
+    if (fs.existsSync(path.join(dir, "package.json"))) {
+      return dir;
+    }
+
+    dir = path.dirname(dir);
+  }
+
+  return dir;
+})();
+
 const server = http.createServer(async (req, res) => {
   try {
     const request = await normalizeRequest(req);
-    const file = matchPath(path.join(__dirname, apiDir), request.path);
+    const file = matchPath(path.join(rootDir, apiDir), request.path);
 
     if (!file) {
       const err = new ResponseError("Page not found!");
