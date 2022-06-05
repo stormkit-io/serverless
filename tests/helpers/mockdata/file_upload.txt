@@ -1,0 +1,52 @@
+--------------------------893d525885d56cf1
+Content-Disposition: form-data; name="userid"
+
+1
+--------------------------893d525885d56cf1
+Content-Disposition: form-data; name="filecomment"
+
+This is an image file
+--------------------------893d525885d56cf1
+Content-Disposition: form-data; name="image"; filename="package.json"
+Content-Type: application/octet-stream
+
+{
+  "name": "@stormkit/serverless",
+  "version": "1.0.0",
+  "description": "Export node.js applications into serverless compatible functions",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "test": "jest"
+  },
+  "author": "Stormkit <hello@stormkit.io>",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-typescript": "^7.15.0",
+    "@jest/types": "^27.2.5",
+    "@nuxt/types": "^2.15.8",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/express": "^4.17.13",
+    "@types/express-fileupload": "^1.1.7",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.6",
+    "@types/webpack": "^4.41.28",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "jest": "^27.3.1",
+    "ts-loader": "^9.2.6",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4",
+    "webpack": "^5.60.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "express-fileupload": "^1.2.1",
+    "jiti": "^1.12.9",
+    "save-dev": "^0.0.1-security"
+  }
+}
+
+--------------------------893d525885d56cf1--
