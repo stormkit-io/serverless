@@ -1,8 +1,8 @@
 {
   "name": "@stormkit/serverless",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Export node.js applications into serverless compatible functions",
-  "main": "src/index.ts",
+  "main": "dist/serverless.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch --onlyChanged",
