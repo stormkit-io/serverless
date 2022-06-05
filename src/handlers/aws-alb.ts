@@ -1,5 +1,3 @@
-import { NodeRequest } from "~/types";
-import type { Callback, SupportedApps } from "../utils";
 import { handleSuccess, handleError } from "../utils";
 
 interface Context {
@@ -30,8 +28,11 @@ export default (app: SupportedApps) =>
     // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
     context.callbackWaitsForEmptyEventLoop = false;
 
+    const url = withQuery(event.path, event.queryStringParameters);
+
     const request: NodeRequest = {
-      url: withQuery(event.path, event.queryStringParameters),
+      url,
+      path: url.split("?")?.[0] || "/",
       method: event.httpMethod,
       headers: event.headers,
       body: event.body,

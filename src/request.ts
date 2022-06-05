@@ -1,7 +1,6 @@
 import http from "http";
 import { Readable } from "stream";
 import type { Socket } from "net";
-import type { NodeRequest } from "./types";
 
 class Request extends http.IncomingMessage {
   constructor(props: NodeRequest) {
