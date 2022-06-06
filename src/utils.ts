@@ -54,7 +54,7 @@ export const matchPath = (
   }
 };
 
-export const handleError = (callback: Callback) => (e: Error) => {
+export const handleError = (callback: AwsCallback) => (e: Error) => {
   let msg = e && e.message ? e.message : undefined;
   let stack = e && e.stack ? e.stack : undefined;
 

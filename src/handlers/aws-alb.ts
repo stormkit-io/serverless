@@ -1,19 +1,6 @@
 import { handleSuccess, handleError } from "../utils";
 
-interface Context {
-  callbackWaitsForEmptyEventLoop?: boolean;
-}
-
 type QueryStringParameters = Record<string, string | string[]>;
-
-export interface ALBRequest {
-  httpMethod: string;
-  path: string;
-  queryStringParameters: QueryStringParameters;
-  headers: Record<string, string>;
-  body: string;
-  isBase64Encoded: boolean;
-}
 
 const withQuery = (path: string, query?: QueryStringParameters): string => {
   if (!query) {
@@ -23,8 +10,8 @@ const withQuery = (path: string, query?: QueryStringParameters): string => {
   return `${path}?${new URLSearchParams(query).toString()}`;
 };
 
-export default (app: App) =>
-  async (event: ALBRequest, context: Context, callback: Callback) => {
+export default (app: App): AwsAlbHandler =>
+  async (event, context, callback) => {
     // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
     context.callbackWaitsForEmptyEventLoop = false;
 

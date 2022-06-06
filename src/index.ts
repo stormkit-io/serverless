@@ -1,11 +1,33 @@
 import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
 
-const serverless = (app: App) => {
-  return stormkitHandler(app);
+type HandlerType = "awsAlb" | "stormkit";
+
+const handlers: Record<string, HandlerType> = {
+  awsAlb: "awsAlb",
+  stormkit: "stormkit",
 };
 
-serverless.stormkit = stormkitHandler;
-serverless.awsAlb = awsAlbHandler;
+const defaultHandler: HandlerType = (() => {
+  const handler = process.env.SERVERLESS_HANDLER;
 
-export default serverless;
+  for (const val of Object.values(handlers)) {
+    if (val === handler) {
+      return val;
+    }
+  }
+
+  return handlers.stormkit;
+})();
+
+export default function (
+  app: App,
+  handler: HandlerType = defaultHandler
+): StormkitHandler | AwsAlbHandler {
+  switch (handler) {
+    case handlers.awsAlb:
+      return awsAlbHandler(app);
+    default:
+      return stormkitHandler(app);
+  }
+}

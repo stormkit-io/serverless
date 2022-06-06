@@ -82,7 +82,9 @@ const callApi = (
   request: NodeRequest,
   res: http.ServerResponse
 ): Promise<void> => {
-  return serverless(api)(request, {}, (_: Error | null, data: NodeResponse) => {
+  const handler = serverless(api) as StormkitHandler;
+
+  return handler(request, {}, (_: Error | null, data: NodeResponse) => {
     res.writeHead(data.status, data.headers);
     res.write(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
     res.end();

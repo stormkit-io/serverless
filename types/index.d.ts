@@ -5,8 +5,6 @@ declare type App = (
   res: http.ServerResponse
 ) => void;
 
-declare type Callback = (e: Error | null, data: any) => void;
-
 declare interface NodeRequest {
   url: string; // /relative/path?query=value#hash
   path: string; // /relative/path
