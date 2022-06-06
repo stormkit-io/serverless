@@ -3,7 +3,7 @@ declare module "@stormkit/serverless" {
 
   type HandlerType = "awsAlb" | "stormkit";
 
-  export default function serverless(fn: App, h: HandlerType): Promise<void>;
+  export default function serverless(fn: App, h?: HandlerType): Promise<void>;
 
   export interface Request extends IncomingMessage {}
   export interface Response extends ServerResponse {}
