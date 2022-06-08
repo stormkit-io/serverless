@@ -7,6 +7,12 @@ Stormkit servesless provides handy wrappers to make your code work in serverless
 This makes your function much more portable. The wrapper will take the incoming `event` and transform
 it into a Node.js `http.IncomingMessage` object.
 
+## For whom is this package targeted for? 
+
+This repository is intended for users who care about portability. If you know you'll be using AWS Lambda and 
+you don't need to make your code portable, then this package may be overengineering for your needs. If, 
+however, you'd like to deploy your application to multiple providers, then this package can be helpful.
+
 ## Example usage
 
 ```js
@@ -14,7 +20,7 @@ import http from "http";
 import serverless from "@stormkit/serverless";
 
 export const handler = serverless(
-  (req: http.IncomingMessage, res: http.ServerResponse) => {
+  async (req: http.IncomingMessage, res: http.ServerResponse) => {
     res.write("Hello from " + req.url);
     res.end();
   }
@@ -26,7 +32,7 @@ the `serverless` function which handler to use.
 
 ```js
 export const handler = serverless(
-  (req: http.IncomingMessage, res: http.ServerResponse) => {
+  async (req: http.IncomingMessage, res: http.ServerResponse) => {
     res.write("Hello from " + req.url);
     res.end();
   },
