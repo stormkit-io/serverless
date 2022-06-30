@@ -1,5 +1,4 @@
 import { Configuration } from "webpack";
-import TerserPlugin from "terser-webpack-plugin";
 import path from "path";
 
 const config: Configuration = {
@@ -30,11 +29,7 @@ const config: Configuration = {
     },
   },
   optimization: {
-    minimizer: [
-      new TerserPlugin({
-        extractComments: false,
-      }),
-    ],
+    minimize: false,
   },
 };
 
