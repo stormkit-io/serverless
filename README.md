@@ -1,7 +1,6 @@
 <h1 align="center">Stormkit Serverless</h1>
 <p align="center">Export node.js applications into serverless compatible functions</p>
-
-## Why?
+<hr />
 
 Stormkit servesless provides handy wrappers to make your code work in serverless environments. 
 This makes your function much more portable. The wrapper will take the incoming `event` and transform
