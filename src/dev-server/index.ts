@@ -1,6 +1,7 @@
 import http from "http";
 import path from "path";
 import fs from "fs";
+import express from "express";
 import serverless from "../index";
 import { matchPath } from "../utils";
 
@@ -18,8 +19,9 @@ interface DevServerConfig {
   // then this variable defaults false.
   wrapServerless?: boolean;
   // If specified, static files will be served from this folder.
-  // TODO: implement me
-  assetsDir?: string;
+  assetsDir?: string | string[];
+  // Path rewrites. Keys are going to be replaced with values.
+  rewrite?: Record<string, string>;
 }
 
 const defaultConfig: DevServerConfig = {
@@ -129,7 +131,26 @@ class DevServer {
   }
 
   listen(): void {
-    const server = http.createServer(async (req, res) => {
+    const { rewrite, assetsDir } = this.config;
+    const dirs: string[] = Array.isArray(assetsDir) ? assetsDir : [assetsDir!];
+
+    const app = express();
+
+    if (rewrite) {
+      app.use((req, _, next) => {
+        Object.keys(rewrite).forEach((key) => {
+          req.url = req.url?.replace(key, this.config.rewrite![key]);
+        });
+
+        next();
+      });
+    }
+
+    for (let dir of dirs) {
+      app.use(express.static(dir));
+    }
+
+    app.all("*", async (req, res) => {
       try {
         const request = await this._normalizeRequest(req);
         const file = this._pathToFileOr404(request);
@@ -162,7 +183,7 @@ class DevServer {
       }
     });
 
-    server.listen(this.config.port, this.config.host, undefined, () => {
+    app.listen(this.config.port!, this.config.host!, () => {
       console.log(
         `Server running at http://${this.config.host}:${this.config.port}/`
       );
