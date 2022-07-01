@@ -4,54 +4,28 @@ import fs from "fs";
 import serverless from "../index";
 import { matchPath } from "../utils";
 
-const hostname = process.env.SERVERLESS_HOST || "localhost";
-const port = Number(process.env.SERVERLESS_PORT) || 3030;
-const apiDir = process.env.SERVERLESS_DIR || "api";
+interface DevServerConfig {
+  // The port to listen
+  port?: number;
+  // The host to listen
+  host?: string;
+  // If provided, the directory will be used as a file-system based routing root.
+  dir?: string;
+  // If provided, all requests will be forwareded to this file. Has precedence over `dir`.
+  file?: string;
+  // Whether to wrap the exported function with serverless handler or not. If a `dir`
+  // option is provided, this variable defaults true. If a `file` option is provided
+  // then this variable defaults false.
+  wrapServerless?: boolean;
+  // If specified, static files will be served from this folder.
+  // TODO: implement me
+  assetsDir?: string;
+}
 
-const readBody = (req: http.IncomingMessage): Promise<string> => {
-  const body: string[] = [];
-
-  return new Promise((resolve, reject) => {
-    if (req.method?.toLowerCase() === "get") {
-      return resolve("");
-    }
-
-    req.on("data", (chunks) => {
-      body.push(chunks.toString("utf-8"));
-    });
-
-    req.on("end", () => {
-      resolve(body.join(""));
-    });
-  });
-};
-
-const normalizeRequest = async (
-  req: http.IncomingMessage
-): Promise<NodeRequest> => {
-  const headers: Record<string, string> = {};
-  const body = await readBody(req);
-
-  Object.keys(req.headers).forEach((key) => {
-    const headerVal = req.headers[key];
-    const headerKey = key.toLowerCase();
-
-    if (Array.isArray(headerVal)) {
-      headers[headerKey] = headerVal.join(",");
-    } else if (headerVal) {
-      headers[headerKey] = headerVal;
-    }
-  });
-
-  const request: NodeRequest = {
-    method: req.method || "get",
-    url: req.url || "/",
-    path: req.url?.split("?")?.[0] || "/",
-    body,
-    headers,
-  };
-
-  return request;
+const defaultConfig: DevServerConfig = {
+  dir: process.env.SERVERLESS_DIR || "api",
+  host: process.env.SERVERLESS_HOST || "localhost",
+  port: Number(process.env.SERVERLESS_PORT) || 3000,
 };
 
 const rootDir = ((): string => {
@@ -77,47 +51,128 @@ const _require =
     ? __non_webpack_require__
     : require;
 
-const callApi = (
-  api: App,
-  request: NodeRequest,
-  res: http.ServerResponse
-): Promise<void> => {
-  const handler = serverless(api) as StormkitHandler;
+class DevServer {
+  config: DevServerConfig;
 
-  return handler(request, {}, (_: Error | null, data: NodeResponse) => {
-    res.writeHead(data.status, data.headers);
-    res.write(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
-    res.end();
-  });
-};
+  constructor(config: DevServerConfig) {
+    Object.keys(defaultConfig).forEach((k) => {
+      const key = k as keyof DevServerConfig;
 
-const server = http.createServer(async (req, res) => {
-  try {
-    const request = await normalizeRequest(req);
-    const file = matchPath(path.join(rootDir, apiDir), request.path);
-
-    if (!file) {
-      try {
-        const api = _require(path.join(rootDir, apiDir, "404")).default;
-        await callApi(api, request, res);
-      } catch {
-        res.writeHead(404, "Page not found");
-        res.end("Page not found!");
+      if (!config[key]) {
+        // @ts-ignore
+        config[key] = defaultConfig[key];
       }
+    });
 
-      return;
+    this.config = config;
+  }
+
+  _pathToFileOr404(req: NodeRequest): string | undefined {
+    if (this.config.file) {
+      return this.config.file;
     }
 
-    const api = _require(path.join(file.path, file.name)).default;
-    await callApi(api, request, res);
-  } catch (e) {
-    console.error(e);
-    res.writeHead(500);
-    res.write("Something went wrong. Check the logs.");
-    res.end();
-  }
-});
+    const root = path.join(rootDir, this.config.dir || "");
+    const file = matchPath(root, req.path);
 
-server.listen(port, hostname, undefined, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+    if (file) {
+      return path.join(file.path, file.name);
+    }
+
+    if (fs.existsSync(path.join(root, "404"))) {
+      return path.join(root, "404");
+    }
+  }
+
+  async _readBody(req: http.IncomingMessage): Promise<string> {
+    const body: string[] = [];
+
+    return new Promise((resolve, reject) => {
+      if (req.method?.toLowerCase() === "get") {
+        return resolve("");
+      }
+
+      req.on("data", (chunks) => {
+        body.push(chunks.toString("utf-8"));
+      });
+
+      req.on("end", () => {
+        resolve(body.join(""));
+      });
+    });
+  }
+
+  async _normalizeRequest(req: http.IncomingMessage): Promise<NodeRequest> {
+    const headers: Record<string, string> = {};
+    const body = await this._readBody(req);
+
+    Object.keys(req.headers).forEach((key) => {
+      const headerVal = req.headers[key];
+      const headerKey = key.toLowerCase();
+
+      if (Array.isArray(headerVal)) {
+        headers[headerKey] = headerVal.join(",");
+      } else if (headerVal) {
+        headers[headerKey] = headerVal;
+      }
+    });
+
+    const request: NodeRequest = {
+      method: req.method || "get",
+      url: req.url || "/",
+      path: req.url?.split("?")?.[0] || "/",
+      body,
+      headers,
+    };
+
+    return request;
+  }
+
+  listen(): void {
+    const server = http.createServer(async (req, res) => {
+      try {
+        const request = await this._normalizeRequest(req);
+        const file = this._pathToFileOr404(request);
+
+        if (!file) {
+          res.writeHead(404);
+          res.write("Page is not found.");
+          res.end();
+          return;
+        }
+
+        const api = _require(file);
+        let handler = api.default || api.renderer || api.handler;
+
+        if (this.config.wrapServerless) {
+          handler = serverless(handler) as StormkitHandler;
+        }
+
+        // TODO: this is a StormkitHandler signature. Add support for other handlers.
+        return handler(request, {}, (_: Error | null, data: NodeResponse) => {
+          res.writeHead(data.status, data.headers);
+          res.write(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
+          res.end();
+        });
+      } catch (e) {
+        console.error(e);
+        res.writeHead(500);
+        res.write("Something went wrong. Check the logs.");
+        res.end();
+      }
+    });
+
+    server.listen(this.config.port, this.config.host, undefined, () => {
+      console.log(
+        `Server running at http://${this.config.host}:${this.config.port}/`
+      );
+    });
+  }
+}
+
+// File called is directly, launch a dev-server with default config
+if (__non_webpack_require__.main === module) {
+  new DevServer({}).listen();
+}
+
+export default DevServer;
