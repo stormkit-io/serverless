@@ -2,8 +2,7 @@
   "name": "@stormkit/serverless",
   "version": "0.5.1",
   "description": "Export node.js applications into serverless compatible functions",
-  "main": "dist/index.js",
-  "types": "index.d.ts",
+  "main": "dist/serverless.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch --onlyChanged",
@@ -54,8 +53,7 @@
   "files": [
     "dist/",
     "LICENSE",
-    "README.md",
-    "src/types/bundle/"
+    "README.md"
   ],
   "publishConfig": {
     "access": "public"
