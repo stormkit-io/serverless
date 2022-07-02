@@ -20,7 +20,7 @@ const module: ModuleOptions = {
 
 const config: Configuration = {
   entry: {
-    index: "./src/serverless.ts",
+    serverless: "./src/serverless.ts",
     "dev-server": "./src/dev-server/index.ts",
   },
   output: {
