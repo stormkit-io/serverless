@@ -55,7 +55,7 @@
     "dist/",
     "LICENSE",
     "README.md",
-    "index.d.ts"
+    "serverless.d.ts"
   ],
   "publishConfig": {
     "access": "public"

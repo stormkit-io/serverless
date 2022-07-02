@@ -2,8 +2,8 @@ import http from "http";
 import path from "path";
 import fs from "fs";
 import express from "express";
-import serverless from "../index";
-import { matchPath } from "../utils";
+import serverless from "~/serverless";
+import { matchPath } from "~/utils";
 
 interface DevServerConfig {
   // The port to listen
