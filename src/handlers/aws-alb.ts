@@ -1,4 +1,27 @@
+import type { App } from "../serverless";
+import type { NodeRequest } from "../request";
 import { handleSuccess, handleError } from "../utils";
+
+export type AwsCallback = (e: Error | null, data: any) => void;
+
+export interface AwsContext {
+  callbackWaitsForEmptyEventLoop?: boolean;
+}
+
+export type AwsAlbHandler = (
+  request: ALBRequest,
+  context: AwsContext,
+  callback: AwsCallback
+) => Promise<void>;
+
+export interface ALBRequest {
+  httpMethod: string;
+  path: string;
+  queryStringParameters: QueryStringParameters;
+  headers: Record<string, string>;
+  body: string;
+  isBase64Encoded: boolean;
+}
 
 type QueryStringParameters = Record<string, string | string[]>;
 
@@ -7,6 +30,7 @@ const withQuery = (path: string, query?: QueryStringParameters): string => {
     return path;
   }
 
+  // @ts-ignore
   return `${path}?${new URLSearchParams(query).toString()}`;
 };
 

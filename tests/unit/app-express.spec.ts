@@ -1,3 +1,5 @@
+import type { NodeRequest } from "~/request";
+import type { NodeResponse } from "~/response";
 import zlib from "zlib";
 import http from "http";
 import path from "path";

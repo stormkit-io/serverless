@@ -1,3 +1,6 @@
+import type { NodeRequest } from "~/request";
+import type { ALBRequest } from "~/handlers/aws-alb";
+
 export const mockNodeRequest = (): NodeRequest => ({
   method: "GET",
   headers: {

@@ -1,5 +1,10 @@
+import type { StormkitHandler } from "./handlers/stormkit";
+import type { AwsAlbHandler } from "./handlers/aws-alb";
 import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
+import http from "http";
+
+export type App = (req: http.IncomingMessage, res: http.ServerResponse) => void;
 
 type HandlerType = "awsAlb" | "stormkit";
 

@@ -3,6 +3,7 @@
   "version": "0.5.2",
   "description": "Export node.js applications into serverless compatible functions",
   "main": "dist/serverless.js",
+  "types": "dist/serverless.d.ts",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch --onlyChanged",
@@ -51,7 +52,11 @@
     "webpack-cli": "^4.9.2"
   },
   "files": [
-    "dist/",
+    "dist/serverless.js",
+    "dist/serverless.d.ts",
+    "dist/dev-server.d.ts",
+    "dist/dev-server.js",
+    "dist/entries",
     "LICENSE",
     "README.md"
   ],

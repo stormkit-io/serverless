@@ -4,6 +4,13 @@ import httpParse from "./http-parser";
 import Request from "./request";
 import createStream from "./stream";
 
+export interface NodeResponse {
+  buffer?: string; // Raw http body base64 encoded
+  status: number;
+  statusMessage: string;
+  headers: Record<string, string | string[]>;
+}
+
 class Response extends ServerResponse {
   constructor(req: Request) {
     super(req);

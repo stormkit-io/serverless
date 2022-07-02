@@ -1,5 +1,6 @@
 import http from "http";
 import serverless from "~/serverless";
+import type { App } from "~/serverless";
 
 let app: App | undefined;
 

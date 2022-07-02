@@ -1,9 +1,13 @@
 import type { Express } from "express";
+import type { NodeResponse } from "./response";
+import type { NodeRequest } from "./request";
+import type { AwsCallback } from "./handlers/aws-alb";
 import fs from "fs";
 import path from "path";
 import { match } from "node-match-path";
 import Request from "./request";
 import Response from "./response";
+import type { App } from "./serverless";
 
 interface WalkFile {
   name: string;

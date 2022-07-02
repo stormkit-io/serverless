@@ -8,14 +8,21 @@
     "module": "commonjs",
     "resolveJsonModule": true,
     "allowJs": true,
-    "outDir": "build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
+    "outDir": "dist",
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "declaration": true,
+    "declarationDir": "dist",
+    "declarationMap": false,
     "skipLibCheck": true,
+    "sourceMap": false,
     "paths": {
       "~/*": ["./src/*"]
     }
-  }
+  },
+  "include": ["src/**/*", "types/**/*"]
 }

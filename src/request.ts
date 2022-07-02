@@ -2,6 +2,16 @@ import http from "http";
 import { Readable } from "stream";
 import type { Socket } from "net";
 
+export interface NodeRequest {
+  url: string; // /relative/path?query=value#hash
+  path: string; // /relative/path
+  body: string;
+  method: string;
+  headers: Record<string, string>;
+  remoteAddress?: string;
+  remotePort?: string;
+}
+
 class Request extends http.IncomingMessage {
   constructor(props: NodeRequest) {
     const socket = {

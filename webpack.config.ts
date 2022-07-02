@@ -21,7 +21,7 @@ const module: ModuleOptions = {
 const config: Configuration = {
   entry: {
     serverless: "./src/serverless.ts",
-    "dev-server": "./src/dev-server/index.ts",
+    "dev-server": "./src/dev-server.ts",
   },
   output: {
     filename: "[name].js",
@@ -35,6 +35,7 @@ const config: Configuration = {
   optimization: {
     minimize: false,
   },
+  plugins: [],
 };
 
 const entries: Configuration = {
