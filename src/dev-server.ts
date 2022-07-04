@@ -2,11 +2,11 @@ import type { NodeRequest } from "./request";
 import type { NodeResponse } from "./response";
 import type { StormkitHandler } from "./handlers/stormkit";
 import http from "http";
-import path from "path";
+import path, { resolve } from "path";
 import fs from "fs";
 import express from "express";
-import serverless from "~/serverless";
-import { matchPath } from "~/utils";
+import serverless from "./serverless";
+import { matchPath } from "./utils";
 
 export interface DevServerConfig {
   // The port to listen
@@ -31,7 +31,38 @@ const defaultConfig: DevServerConfig = {
   dir: process.env.SERVERLESS_DIR || "api",
   host: process.env.SERVERLESS_HOST || "localhost",
   port: Number(process.env.SERVERLESS_PORT) || 3000,
+  wrapServerless: true,
 };
+
+if (process.env.REPO_PATH) {
+  interface PackageJson {
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+  }
+
+  const packageJson =
+    require(`${process.env.REPO_PATH}/package.json`) as PackageJson;
+
+  const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
+
+  if (deps["next"]) {
+    defaultConfig.wrapServerless = false;
+    defaultConfig.file = "./entries/next/server";
+    defaultConfig.rewrite = { "_next/static/": "/" };
+    defaultConfig.assetsDir = [
+      path.join(process.env.REPO_PATH, "public"),
+      path.join(process.env.REPO_PATH, ".next/static"),
+    ];
+  } else if (deps["nuxt"]) {
+    defaultConfig.wrapServerless = false;
+    defaultConfig.file = "./entries/nuxt/v2/server";
+    defaultConfig.rewrite = { "/_nuxt": "/" };
+    defaultConfig.assetsDir = [
+      path.join(process.env.REPO_PATH, "static"),
+      path.join(process.env.REPO_PATH, ".nuxt/dist/client"),
+    ];
+  }
+}
 
 const rootDir = ((): string => {
   let dir = require?.main?.filename || process.cwd();
@@ -63,7 +94,7 @@ class DevServer {
     Object.keys(defaultConfig).forEach((k) => {
       const key = k as keyof DevServerConfig;
 
-      if (!config[key]) {
+      if (typeof config[key] === "undefined") {
         // @ts-ignore
         config[key] = defaultConfig[key];
       }
@@ -84,15 +115,17 @@ class DevServer {
       return path.join(file.path, file.name);
     }
 
-    if (fs.existsSync(path.join(root, "404"))) {
-      return path.join(root, "404");
+    for (const ext of ["ts", "js", "mjs"]) {
+      if (fs.existsSync(path.join(root, `404.${ext}`))) {
+        return path.join(root, "404");
+      }
     }
   }
 
   async _readBody(req: http.IncomingMessage): Promise<string> {
     const body: string[] = [];
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _) => {
       if (req.method?.toLowerCase() === "get") {
         return resolve("");
       }
@@ -135,7 +168,9 @@ class DevServer {
 
   listen(): void {
     const { rewrite, assetsDir } = this.config;
-    const dirs: string[] = Array.isArray(assetsDir) ? assetsDir : [assetsDir!];
+    const dirs: string[] = Array.isArray(assetsDir)
+      ? assetsDir
+      : [assetsDir!].filter((i) => i);
 
     const app = express();
 
@@ -174,9 +209,12 @@ class DevServer {
 
         // TODO: this is a StormkitHandler signature. Add support for other handlers.
         return handler(request, {}, (_: Error | null, data: NodeResponse) => {
-          res.writeHead(data.status, data.headers);
-          res.write(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
-          res.end();
+          Object.keys(data.headers).forEach((key) => {
+            res.set(key, data.headers[key]);
+          });
+
+          res.status(data.status);
+          res.send(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
         });
       } catch (e) {
         console.error(e);
@@ -195,7 +233,10 @@ class DevServer {
 }
 
 // File called is directly, launch a dev-server with default config
-if (__non_webpack_require__.main === module) {
+if (
+  typeof __non_webpack_require__ === "undefined" ||
+  __non_webpack_require__.main === module
+) {
   new DevServer({}).listen();
 }
 
