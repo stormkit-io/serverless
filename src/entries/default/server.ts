@@ -1,13 +1,9 @@
-import http from "http";
-import serverless from "~/serverless";
 import type { App } from "~/serverless";
+import http from "http";
+import serverless from "../../serverless";
+import { load } from "../../utils";
 
 let app: App | undefined;
-
-const load =
-  typeof __non_webpack_require__ !== "undefined"
-    ? __non_webpack_require__
-    : require;
 
 const serverlessLookupFiles = ["__sk__app.js", "server.js", "serverless.js"];
 

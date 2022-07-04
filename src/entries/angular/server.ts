@@ -1,11 +1,7 @@
-import serverless from "~/serverless";
 import path from "path";
 import fs from "fs";
-
-const load =
-  typeof __non_webpack_require__ !== "undefined"
-    ? __non_webpack_require__
-    : require;
+import serverless from "../../serverless";
+import { load } from "../../utils";
 
 interface AngularJSON {
   version: string;

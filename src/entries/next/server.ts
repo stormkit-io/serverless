@@ -1,12 +1,8 @@
 import fs from "fs";
 import path from "path";
 import http from "http";
-import serverless from "~/serverless";
-
-const load =
-  typeof __non_webpack_require__ !== "undefined"
-    ? __non_webpack_require__
-    : require;
+import serverless from "../../serverless";
+import { load } from "../../utils";
 
 interface NextServerOpts {
   dev: boolean;
@@ -15,8 +11,6 @@ interface NextServerOpts {
   dir: string;
   conf: Record<string, any>;
 }
-
-const requiredFiles: Record<string, any> = {};
 
 function findProjectRoot(dir: string): string {
   let i = 0;
@@ -32,8 +26,8 @@ function findProjectRoot(dir: string): string {
   return dir;
 }
 
+const requiredFiles: Record<string, any> = {};
 const root = findProjectRoot(__dirname);
-process.chdir(root);
 
 try {
   Object.assign(
@@ -63,7 +57,7 @@ if (fs.existsSync(path.join(root, ".next/serverless"))) {
   serverConfig.conf.target = "serverless";
 }
 
-const Next = load("next/dist/server/next-server").default;
+const Next = load<{ default: any }>("next/dist/server/next-server").default;
 const next = new Next(serverConfig);
 const handler = next.getRequestHandler();
 
