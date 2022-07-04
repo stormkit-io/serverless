@@ -12,6 +12,12 @@ This repository is intended for users who care about portability. If you know yo
 you don't need to make your code portable, then this package may be overengineering for your needs. If, 
 however, you'd like to deploy your application to multiple providers, then this package can be helpful.
 
+## Installation
+
+```
+npm i @stormkit/serverless
+```
+
 ## Example usage
 
 ```js
@@ -39,7 +45,7 @@ export const handler = serverless(
 );
 ```
 
-In order to avoid setting the handler type all the time, you can also use the `process.env.SERVERLESS_HANDLER`
+To avoid setting the handler type all the time, you can also use the `process.env.SERVERLESS_HANDLER`
 environment variable to set a different default type. Allowed types are:
 
 - `awsAlb`
@@ -54,6 +60,35 @@ supported providers:
 
 - [Stormkit](https://www.stormkit.io)
 - [AWS ALB](https://docs.aws.amazon.com/lambda/latest/dg/services-alb.html)
+
+## Testing locally
+
+It is possible to test this repository locally by using the [dev-server](./src/dev-server.ts). 
+
+1. Open a terminal
+2. Go to your project
+3. Build your project (usually `npm run build`)
+4. Clone `@stormkit/serverless` (where you clone is unimportant)
+6. Run `npm install`
+7. Run `REPO_PATH=<local-path-to-your-repo> npm run dev`
+
+Currently `nuxt` and `next` projects are detected and configured automatically. If you're testing other
+frameworks, you can submit a feature request.
+
+Alternatively, you can install `@stormkit/serverless` and run the local server directly in your 
+repository with programmatic usage:
+
+```javascript
+import DevServer from "@stormkit/serverless/dist/dev-server"
+
+new DevServer({
+  host: "localhost",
+  port: 3000,
+  dir: "path/to/api/folder"
+}).listen()
+```
+
+See [dev-server](./src/dev-server.ts) for the available options.
 
 ## License 
 
