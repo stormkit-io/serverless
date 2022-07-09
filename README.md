@@ -63,7 +63,7 @@ supported providers:
 
 ## Testing locally
 
-It is possible to test this repository locally by using the [dev-server](./src/dev-server.ts). 
+It is possible to test this repository locally by using the [dev-server](./src/dev-server/index.ts).
 
 1. Open a terminal
 2. Go to your project

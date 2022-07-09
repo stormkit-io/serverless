@@ -2,10 +2,9 @@ import type { App } from "~/serverless";
 import http from "http";
 import serverless from "../../serverless";
 import { load } from "../../utils";
+import { serverlessLookupFiles } from "../../presets/default/constants";
 
 let app: App | undefined;
-
-const serverlessLookupFiles = ["__sk__app.js", "server.js", "serverless.js"];
 
 for (let file of serverlessLookupFiles) {
   try {

@@ -21,7 +21,8 @@ const module: ModuleOptions = {
 const config: Configuration = {
   entry: {
     serverless: "./src/serverless.ts",
-    "dev-server": "./src/dev-server.ts",
+    "presets/index": "./src/presets/index.ts",
+    "dev-server/index": "./src/dev-server/index.ts",
   },
   output: {
     filename: "[name].js",

@@ -1,12 +1,12 @@
-import type { NodeRequest } from "./request";
-import type { NodeResponse } from "./response";
-import type { StormkitHandler } from "./handlers/stormkit";
+import type { NodeRequest } from "../request";
+import type { NodeResponse } from "../response";
+import type { StormkitHandler } from "../handlers/stormkit";
 import http from "http";
-import path, { resolve } from "path";
+import path from "path";
 import fs from "fs";
 import express from "express";
-import serverless from "./serverless";
-import { matchPath } from "./utils";
+import serverless from "../serverless";
+import { matchPath } from "../utils";
 
 export interface DevServerConfig {
   // The port to listen
