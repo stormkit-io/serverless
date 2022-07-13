@@ -12,6 +12,41 @@ export default class DefaultPreset implements PresetInterface {
     this.distDir = this.props.distDir || "./";
   }
 
+  static FunctionHandler(serverDir: string): string {
+    for (let file of ["index.mjs", "index.js", "server.js", "server.mjs"]) {
+      if (fs.existsSync(path.join(serverDir, file))) {
+        return `${file}:handler`;
+      }
+    }
+
+    return "__sk__server.js:renderer";
+  }
+
+  static HasStormkitBuildFolder(props: PresetProps): boolean {
+    return fs.existsSync(path.join(props.repoDir, ".stormkit"));
+  }
+
+  static ArtifactsFromStormkitBuildFolder(props: PresetProps): Artifacts {
+    const stormkitBuildFolder = path.join(props.repoDir, ".stormkit");
+    const artifacts: Artifacts = { clientFiles: [] };
+    const clientDir = path.join(stormkitBuildFolder, "public");
+    const serverDir = path.join(stormkitBuildFolder, "server");
+
+    if (fs.existsSync(clientDir)) {
+      artifacts.clientFiles.push({
+        pattern: "**/*",
+        cwd: ".stormkit/public",
+      });
+    }
+
+    if (fs.existsSync(serverDir)) {
+      artifacts.functionHandler = DefaultPreset.FunctionHandler(serverDir);
+      artifacts.serverFiles = [{ pattern: "**/*", cwd: ".stormkit/server" }];
+    }
+
+    return artifacts;
+  }
+
   locateServerlessEntryFile(): string | undefined {
     const sources: string[] = [];
 

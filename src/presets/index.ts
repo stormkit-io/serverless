@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import NextPreset from "./next/NextPreset";
 import DefaultPreset from "./default/DefaultPreset";
-import NuxtPreset from "./nuxt/v2/NuxtPreset";
+import NuxtPreset from "./nuxt/NuxtPreset";
 import AngularPreset from "./angular/AngularPreset";
 
 export interface PackageJson {
@@ -63,6 +63,11 @@ export interface Artifacts {
    * List of node modules that will be packed using `npm-pack`.
    */
   bundle?: string[];
+
+  /**
+   * Entry file and exported function for the serverless entry file.
+   */
+  functionHandler?: string;
 }
 
 interface Props extends Omit<PresetProps, "packageJson" | "packageManager"> {}
@@ -70,6 +75,7 @@ interface Props extends Omit<PresetProps, "packageJson" | "packageManager"> {}
 const packageNameToPresetMap: Record<string, any> = {
   next: NextPreset,
   nuxt: NuxtPreset,
+  nuxt3: NuxtPreset,
   "@angular/core": AngularPreset,
 };
 
@@ -95,6 +101,12 @@ export default function (props: Props): Promise<Artifacts> {
   }
 
   const presetProps: PresetProps = { ...props, packageJson, packageManager };
+
+  if (DefaultPreset.HasStormkitBuildFolder(presetProps)) {
+    return Promise.resolve(
+      DefaultPreset.ArtifactsFromStormkitBuildFolder(presetProps)
+    );
+  }
 
   for (let key in packageNameToPresetMap) {
     if (packageJson.dependencies?.[key] || packageJson.devDependencies?.[key]) {
