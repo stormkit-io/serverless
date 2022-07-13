@@ -65,7 +65,8 @@ export interface Artifacts {
   bundle?: string[];
 
   /**
-   * Entry file and exported function for the serverless entry file.
+   * Entry file and exported function for the serverless entry file in
+   * file:handler name format. For instance, index.mjs:handler.
    */
   functionHandler?: string;
 }
