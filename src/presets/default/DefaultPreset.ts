@@ -9,7 +9,18 @@ export default class DefaultPreset implements PresetInterface {
 
   constructor(props: PresetProps) {
     this.props = props;
-    this.distDir = this.props.distDir || "./";
+    let distDir = this.props.distDir;
+
+    if (!distDir) {
+      for (let folder of ["dist", "build", "output"]) {
+        if (fs.existsSync(path.join(this.props.repoDir, folder))) {
+          distDir = folder;
+          break;
+        }
+      }
+    }
+
+    this.distDir = distDir || "./";
   }
 
   static FunctionHandler(serverDir: string): string {
