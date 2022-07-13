@@ -41,7 +41,7 @@ const config: Configuration = {
 
 const entries: Configuration = {
   entry: {
-    "nuxt-v2": "./src/entries/nuxt/v2/server.ts",
+    "nuxt-v2": "./src/entries/nuxt/server-v2.ts",
     next: "./src/entries/next/server.ts",
     default: "./src/entries/default/server.ts",
     angular: "./src/entries/angular/server.ts",

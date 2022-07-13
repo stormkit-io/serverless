@@ -1,6 +1,6 @@
 import http from "http";
-import serverless from "../../../serverless";
-import { load } from "../../../utils";
+import serverless from "../../serverless";
+import { load } from "../../utils";
 
 // This is the lambda file that will be compiled on build time.
 // It will be used as the entry point for the lambda function.

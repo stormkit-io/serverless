@@ -1,10 +1,10 @@
 import type { NuxtConfig as NuxtConfiguration } from "@nuxt/types";
-import type { PresetInterface, PresetProps, Artifacts } from "../../";
+import type { PresetInterface, PresetProps, Artifacts } from "../";
 import fs from "fs";
 import cp from "child_process";
 import path from "path";
 import jiti from "jiti";
-import { getProductionDependencies, getDependency } from "../../../utils/pck";
+import { getProductionDependencies, getDependency } from "../../utils/pck";
 
 const allowedNuxtConfigFileNames = ["nuxt.config.ts", "nuxt.config.js"];
 
@@ -113,7 +113,7 @@ export default class NuxtPreset implements PresetInterface {
     ];
   }
 
-  async staticApp(): Promise<Artifacts> {
+  staticApp(): Artifacts {
     const config = this.nuxtConfig();
 
     return {
@@ -121,7 +121,7 @@ export default class NuxtPreset implements PresetInterface {
     };
   }
 
-  async serverlessApp(): Promise<Artifacts> {
+  serverlessApp(): Artifacts {
     const config = this.nuxtConfig();
     const bundle = this.getBundledModules();
 

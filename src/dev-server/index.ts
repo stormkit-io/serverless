@@ -55,7 +55,7 @@ if (process.env.REPO_PATH) {
     ];
   } else if (deps["nuxt"]) {
     defaultConfig.wrapServerless = false;
-    defaultConfig.file = "./entries/nuxt/v2/server";
+    defaultConfig.file = "./entries/nuxt/server-v2";
     defaultConfig.rewrite = { "/_nuxt": "/" };
     defaultConfig.assetsDir = [
       path.join(process.env.REPO_PATH, "static"),
