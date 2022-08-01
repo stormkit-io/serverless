@@ -3,6 +3,7 @@ import type { AwsAlbHandler } from "./handlers/aws-alb";
 import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
 import http from "http";
+export { handleApi } from "./utils";
 
 export type App = (req: http.IncomingMessage, res: http.ServerResponse) => void;
 

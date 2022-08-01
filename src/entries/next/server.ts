@@ -27,7 +27,7 @@ function findProjectRoot(dir: string): string {
 }
 
 const requiredFiles: Record<string, any> = {};
-const root = findProjectRoot(process.env.REPO_PATH || __dirname);
+const root = findProjectRoot(__dirname);
 
 try {
   Object.assign(

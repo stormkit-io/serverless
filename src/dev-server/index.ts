@@ -4,24 +4,20 @@ import path from "path";
 import fs from "fs";
 import cp from "child_process";
 import express from "express";
-import { matchPath } from "../utils";
 import { NodeResponse } from "~/response";
 
 const wrapper = `
 let serverless;
+const root = ":root"
 
 try {
   serverless = require("@stormkit/serverless");
 } catch {
   const path = require("path");
-  serverless = require(path.join(__dirname, "../serverless"));
+  serverless = require(path.join(path.dirname(root), "src/serverless"));
 }
 
-serverless.default(require(":file").default)(
-  :event, {}, (e: any, r: any) => {
-    console.log(JSON.stringify(r))
-  }
-)
+serverless.handleApi(:event, root).then((data: any) => console.log(JSON.stringify(data)))
 `;
 
 export interface DevServerConfig {
@@ -49,36 +45,6 @@ const defaultConfig: DevServerConfig = {
   port: Number(process.env.SERVERLESS_PORT) || 3000,
   wrapServerless: true,
 };
-
-if (process.env.REPO_PATH) {
-  interface PackageJson {
-    dependencies?: Record<string, string>;
-    devDependencies?: Record<string, string>;
-  }
-
-  const packageJson =
-    require(`${process.env.REPO_PATH}/package.json`) as PackageJson;
-
-  const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
-
-  if (deps["next"]) {
-    defaultConfig.wrapServerless = false;
-    defaultConfig.file = "./entries/next/server";
-    defaultConfig.rewrite = { "_next/static/": "/" };
-    defaultConfig.assetsDir = [
-      path.join(process.env.REPO_PATH, "public"),
-      path.join(process.env.REPO_PATH, ".next/static"),
-    ];
-  } else if (deps["nuxt"]) {
-    defaultConfig.wrapServerless = false;
-    defaultConfig.file = "./entries/nuxt/server-v2";
-    defaultConfig.rewrite = { "/_nuxt": "/" };
-    defaultConfig.assetsDir = [
-      path.join(process.env.REPO_PATH, "static"),
-      path.join(process.env.REPO_PATH, ".nuxt/dist/client"),
-    ];
-  }
-}
 
 const rootDir = ((): string => {
   let dir = require?.main?.filename || process.cwd();
@@ -112,25 +78,6 @@ class DevServer {
     });
 
     this.config = config;
-  }
-
-  _pathToFileOr404(req: NodeRequest): string | undefined {
-    if (this.config.file) {
-      return this.config.file;
-    }
-
-    const root = path.join(rootDir, this.config.dir || "");
-    const file = matchPath(root, req.path);
-
-    if (file) {
-      return path.join(file.path, file.name);
-    }
-
-    for (const ext of ["ts", "js", "mjs"]) {
-      if (fs.existsSync(path.join(root, `404.${ext}`))) {
-        return path.join(root, "404");
-      }
-    }
   }
 
   async _readBody(req: http.IncomingMessage): Promise<string> {
@@ -202,29 +149,19 @@ class DevServer {
     app.all("*", async (req, res) => {
       try {
         const request = await this._normalizeRequest(req);
-        const file = this._pathToFileOr404(request);
-
-        if (!file) {
-          res.writeHead(404);
-          res.write("Page is not found.");
-          res.end();
-          return;
-        }
-
-        // @ts-ignore
-        delete request.headers;
+        const root = path.join(rootDir, this.config.dir || "");
 
         const data: NodeResponse = JSON.parse(
           cp
             .execSync(
               `ts-node -e '${wrapper
-                .replace(":file", file)
+                .replace(":root", root)
                 .replace(":event", JSON.stringify(request))}'`
             )
             .toString("utf-8")
         );
 
-        Object.keys(data.headers).forEach((key) => {
+        Object.keys(data.headers || {}).forEach((key) => {
           res.set(key, data.headers[key]);
         });
 
@@ -246,8 +183,13 @@ class DevServer {
   }
 }
 
+const req =
+  typeof __non_webpack_require__ !== "undefined"
+    ? __non_webpack_require__
+    : require;
+
 // File called is directly, launch a dev-server with default config
-if (__non_webpack_require__?.main?.path.endsWith("/dev-server")) {
+if (req?.main?.path.endsWith("/dev-server")) {
   new DevServer({}).listen();
 }
 

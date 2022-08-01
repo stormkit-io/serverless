@@ -9,10 +9,6 @@ export type StormkitHandler = (
   callback: AwsCallback
 ) => Promise<void>;
 
-interface Context {
-  callbackWaitsForEmptyEventLoop?: boolean;
-}
-
 export default (app: App): StormkitHandler =>
   async (event, context, callback) => {
     // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
