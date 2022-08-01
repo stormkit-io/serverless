@@ -156,7 +156,7 @@ class DevServer {
             .execSync(
               `ts-node -e '${wrapper
                 .replace(":root", root)
-                .replace(":event", JSON.stringify(request))}'`
+                .replace(":event", JSON.stringify(request))}' --transpileOnly`
             )
             .toString("utf-8")
         );
