@@ -247,7 +247,7 @@ class DevServer {
 }
 
 // File called is directly, launch a dev-server with default config
-if (module.path.endsWith("/dev-server")) {
+if (__non_webpack_require__?.main?.path.endsWith("/dev-server")) {
   new DevServer({}).listen();
 }
 
