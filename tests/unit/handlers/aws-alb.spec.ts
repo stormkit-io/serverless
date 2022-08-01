@@ -3,7 +3,7 @@ import type { ALBRequest } from "~/handlers/aws-alb";
 import handler from "~/handlers/aws-alb";
 import Request from "~/request";
 import Response from "~/response";
-import { mockMainJs, decodeString, mockALBRequest } from "../helpers";
+import { mockMainJs, decodeString, mockALBRequest } from "../../helpers";
 
 describe("handlers/aws-alb.ts", () => {
   let request: ALBRequest;

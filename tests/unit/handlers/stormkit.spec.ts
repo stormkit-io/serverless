@@ -3,7 +3,7 @@ import type { NodeResponse } from "~/response";
 import handler from "~/handlers/stormkit";
 import Request from "~/request";
 import Response from "~/response";
-import { mockNodeRequest, mockMainJs, decodeString } from "../helpers";
+import { mockNodeRequest, mockMainJs, decodeString } from "../../helpers";
 
 describe("handlers/stormkit.ts", () => {
   let request: NodeRequest;
