@@ -1,12 +1,28 @@
 import type { NodeRequest } from "../request";
-import type { NodeResponse } from "../response";
-import type { StormkitHandler } from "../handlers/stormkit";
 import http from "http";
 import path from "path";
 import fs from "fs";
+import cp from "child_process";
 import express from "express";
-import serverless from "../serverless";
 import { matchPath } from "../utils";
+import { NodeResponse } from "~/response";
+
+const wrapper = `
+let serverless;
+
+try {
+  serverless = require("@stormkit/serverless");
+} catch {
+  const path = require("path");
+  serverless = require(path.join(__dirname, "../serverless"));
+}
+
+serverless.default(require(":file").default)(
+  :event, {}, (e: any, r: any) => {
+    console.log(JSON.stringify(r))
+  }
+)
+`;
 
 export interface DevServerConfig {
   // The port to listen
@@ -81,11 +97,6 @@ const rootDir = ((): string => {
 
   return dir;
 })();
-
-const _require =
-  typeof __non_webpack_require__ !== "undefined"
-    ? __non_webpack_require__
-    : require;
 
 class DevServer {
   config: DevServerConfig;
@@ -200,22 +211,25 @@ class DevServer {
           return;
         }
 
-        const api = _require(file);
-        let handler = api.default || api.renderer || api.handler;
+        // @ts-ignore
+        delete request.headers;
 
-        if (this.config.wrapServerless) {
-          handler = serverless(handler) as StormkitHandler;
-        }
+        const data: NodeResponse = JSON.parse(
+          cp
+            .execSync(
+              `ts-node -e '${wrapper
+                .replace(":file", file)
+                .replace(":event", JSON.stringify(request))}'`
+            )
+            .toString("utf-8")
+        );
 
-        // TODO: this is a StormkitHandler signature. Add support for other handlers.
-        return handler(request, {}, (_: Error | null, data: NodeResponse) => {
-          Object.keys(data.headers).forEach((key) => {
-            res.set(key, data.headers[key]);
-          });
-
-          res.status(data.status);
-          res.send(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
+        Object.keys(data.headers).forEach((key) => {
+          res.set(key, data.headers[key]);
         });
+
+        res.status(data.status);
+        res.send(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
       } catch (e) {
         console.error(e);
         res.writeHead(500);
@@ -233,10 +247,7 @@ class DevServer {
 }
 
 // File called is directly, launch a dev-server with default config
-if (
-  typeof __non_webpack_require__ === "undefined" ||
-  __non_webpack_require__.main === module
-) {
+if (module.path.endsWith("/dev-server")) {
   new DevServer({}).listen();
 }
 

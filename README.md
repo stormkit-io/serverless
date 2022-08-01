@@ -12,6 +12,9 @@ This repository is intended for users who care about portability. If you know yo
 you don't need to make your code portable, then this package may be overengineering for your needs. If, 
 however, you'd like to deploy your application to multiple providers, then this package can be helpful.
 
+If you are using [Stormkit](https://www.stormkit.io) and developing an API, you can use this repository to test
+your application locally.
+
 ## Installation
 
 ```
@@ -61,7 +64,31 @@ supported providers:
 - [Stormkit](https://www.stormkit.io)
 - [AWS ALB](https://docs.aws.amazon.com/lambda/latest/dg/services-alb.html)
 
-## Testing locally
+## Dev Server
+
+To test your serverless application locally, execute the following command:
+
+```bash
+node ./node_modules/@stormkit/serverless/dev-server
+```
+
+This will spin up a local dev server and start serving requests from your `/api` folder. The Dev Server
+uses a filesystem routing mechanism, therefore each request will be forwarded to the relevant file. For example:
+
+`/user/subscriptions` will be routed to `$REPO/api/user/subscriptions.ts` or `$REPO/api/user/subscriptions.js` where `$REPO` is path to your repository. For dynamic paths, you can prefix your subfolders with a double-colon `:`. For instance, if your folder structure is `$REPO/api/user/:id/subscriptions.ts`, a request with path `/user/15/subscriptions` will be matched and served from that file.
+
+If you see a `SyntaxError: unexpected token 'export'` error try adding the following configuration
+to the `tsconfig.json` file:
+
+```json
+{
+  "compilerOptions": {
+    "module": "commonjs"
+  }
+}
+```
+
+## Development
 
 It is possible to test this repository locally by using the [dev-server](./src/dev-server/index.ts).
 
