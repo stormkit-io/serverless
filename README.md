@@ -88,41 +88,6 @@ to the `tsconfig.json` file:
 }
 ```
 
-## Development
-
-It is possible to test this repository locally by using the [dev-server](./src/dev-server/index.ts).
-
-1. Open a terminal
-2. Go to your project
-3. Build your project (usually `npm run build`)
-4. Clone `@stormkit/serverless` (where you clone is unimportant)
-6. Run `npm install`
-7. Run `REPO_PATH=<local-path-to-your-repo> npm run dev`
-
-Currently `nuxt` and `next` projects are detected and configured automatically. If you're testing other
-frameworks, you can submit a [feature request](https://github.com/stormkit-io/serverless/issues).
-
-**Note**: `nuxt` `v3` uses a built-in Stormkit preset, therefore this repository does not include any logic
-specific to `v3`. 
-
-Alternatively, you can install `@stormkit/serverless` and run the local server directly in your 
-repository with programmatic usage:
-
-```javascript
-import DevServer from "@stormkit/serverless/dist/dev-server"
-
-new DevServer({
-  host: "localhost",
-  port: 3000,
-  dir: "path/to/api/folder"
-}).listen()
-
-// And then simply call `ts-node <your-file>.ts` to spawn the dev-server up. 
-// Alternatively, you can also use `nodemon` to listen to the changes.
-```
-
-See [dev-server](./src/dev-server.ts) for the available options.
-
 ## License 
 
 Made with 💛 Published under [MIT](./LICENSE).
