@@ -4,14 +4,10 @@ import fs from "fs";
 import cp from "child_process";
 import path from "path";
 import jiti from "jiti";
+import NuxtPresetV3 from "./NuxtPresetV3";
 import { getProductionDependencies, getDependency } from "../../utils/pck";
 
 const allowedNuxtConfigFileNames = ["nuxt.config.ts", "nuxt.config.js"];
-
-const defaultConfig = {
-  distDir: ".nuxt",
-  generateDir: "dist",
-};
 
 /**
  * Nuxt preset for V2 applications. V3 uses nitro behind the scenes,
@@ -19,8 +15,6 @@ const defaultConfig = {
  */
 export default class NuxtPreset implements PresetInterface {
   props: PresetProps;
-  defaultServerDist = ".nuxt";
-  defaultClientDist = "dist";
   _nuxtConfigName?: string;
   _cachedNuxtConfig?: NuxtConfiguration;
 
@@ -43,6 +37,11 @@ export default class NuxtPreset implements PresetInterface {
         break;
       }
     }
+
+    const defaultConfig = {
+      distDir: ".nuxt",
+      generateDir: "dist",
+    };
 
     if (!nuxtConfigFile) {
       const conf: NuxtConfiguration = {
@@ -73,13 +72,24 @@ export default class NuxtPreset implements PresetInterface {
     return nuxtConfig;
   }
 
+  version({ isMajor = false } = {}): string {
+    const dep = getDependency(this.props.packageJson, "nuxt")?.replace(
+      /\^|~/,
+      ""
+    );
+
+    if (isMajor && dep) {
+      return dep.split(".")[0];
+    }
+
+    return dep || "";
+  }
+
   installNuxtStart() {
     const installCmd =
       this.props.packageManager === "yarn" ? "yarn add" : "npm i";
 
-    const nuxtVersion = (
-      getDependency(this.props.packageJson, "nuxt") || ""
-    ).replace(/\^|~/, "");
+    const nuxtVersion = this.version();
 
     console.log(`[sk-step] install nuxt-start`);
     console.log(`installing nuxt-start@${nuxtVersion} to decrease bundle size`);
@@ -164,6 +174,10 @@ export default class NuxtPreset implements PresetInterface {
   }
 
   async artifacts(): Promise<Artifacts> {
+    if (this.version({ isMajor: true }) === "3") {
+      return new NuxtPresetV3(this.props).artifacts();
+    }
+
     const { repoDir } = this.props;
     const config = this.nuxtConfig();
 
