@@ -80,7 +80,7 @@ const packageNameToPresetMap: Record<string, any> = {
   "@angular/core": AngularPreset,
 };
 
-export default function (props: Props): Promise<Artifacts> {
+export default async function (props: Props): Promise<Artifacts> {
   let packageManager: "npm" | "yarn";
   let packageJson: PackageJson;
   let preset: PresetInterface | undefined;
@@ -120,5 +120,12 @@ export default function (props: Props): Promise<Artifacts> {
     preset = new DefaultPreset(presetProps);
   }
 
-  return preset.artifacts();
+  const artifacts = await preset.artifacts();
+
+  if (DefaultPreset.HasApiSubfolder(presetProps)) {
+    artifacts.serverFiles = artifacts.serverFiles || [];
+    artifacts.serverFiles.push({ pattern: "api/**/*", cwd: ".stormkit" });
+  }
+
+  return artifacts;
 }

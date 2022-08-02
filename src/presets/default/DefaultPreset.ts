@@ -33,8 +33,15 @@ export default class DefaultPreset implements PresetInterface {
     return "__sk__server.js:renderer";
   }
 
+  static HasApiSubfolder(props: PresetProps): boolean {
+    return fs.existsSync(path.join(props.repoDir, ".stormkit", "api"));
+  }
+
   static HasStormkitBuildFolder(props: PresetProps): boolean {
-    return fs.existsSync(path.join(props.repoDir, ".stormkit"));
+    return (
+      fs.existsSync(path.join(props.repoDir, ".stormkit", "server")) ||
+      fs.existsSync(path.join(props.repoDir, ".stormkit", "public"))
+    );
   }
 
   static ArtifactsFromStormkitBuildFolder(props: PresetProps): Artifacts {
@@ -42,6 +49,7 @@ export default class DefaultPreset implements PresetInterface {
     const artifacts: Artifacts = { clientFiles: [] };
     const clientDir = path.join(stormkitBuildFolder, "public");
     const serverDir = path.join(stormkitBuildFolder, "server");
+    const apiDir = path.join(stormkitBuildFolder, "api");
 
     if (fs.existsSync(clientDir)) {
       artifacts.clientFiles.push({
@@ -53,6 +61,10 @@ export default class DefaultPreset implements PresetInterface {
     if (fs.existsSync(serverDir)) {
       artifacts.functionHandler = DefaultPreset.FunctionHandler(serverDir);
       artifacts.serverFiles = [{ pattern: "**/*", cwd: ".stormkit/server" }];
+    }
+
+    if (fs.existsSync(apiDir)) {
+      artifacts.serverFiles?.push({ pattern: "api/**/*", cwd: ".stormkit" });
     }
 
     return artifacts;
