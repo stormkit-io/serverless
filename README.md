@@ -88,6 +88,21 @@ to the `tsconfig.json` file:
 }
 ```
 
+## Testing this repo locally
+
+To run an e2e test locally, use the `tests/e2e/run.ts` file:
+
+```bash
+ts-node tests/e2e/run.ts --repo <path-to-repo> --dist-dir <path-to-dist>
+```
+
+|argument|description|
+|--------|-----------|
+|repo    | Required. Absolute path to the repository to test against. |
+|dist-dir| Optional. If the tested repository is not a framework, provide the dist dir. |
+
+Make sure that the repo that is tested is built.
+
 ## License 
 
 Made with 💛 Published under [MIT](./LICENSE).
