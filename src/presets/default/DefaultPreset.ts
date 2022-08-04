@@ -66,7 +66,7 @@ export default class DefaultPreset implements PresetInterface {
     if (fs.existsSync(apiDir)) {
       artifacts.entryFile = "entries/api";
       artifacts.apiHandler = "__sk__api.js:handler";
-      artifacts.apiFiles = [{ pattern: "api/**/*", cwd: ".stormkit" }];
+      artifacts.apiFiles = [{ pattern: "**/*", cwd: ".stormkit/api" }];
     }
 
     return artifacts;

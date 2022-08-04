@@ -4,7 +4,6 @@ import type { NodeRequest } from "../request";
 import type { AwsCallback } from "../handlers/aws-alb";
 import type { App } from "../serverless";
 import path from "path";
-import fs from "fs";
 import Request from "../request";
 import Response from "../response";
 import { matchPath } from "./filesys";

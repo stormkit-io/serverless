@@ -11,7 +11,7 @@ export const handler = async (
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    callback(null, await handleApi(event, "api"));
+    callback(null, await handleApi(event, __dirname));
   } catch (e) {
     handleError(callback)(e as Error);
   }

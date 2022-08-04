@@ -138,7 +138,7 @@ export default async function (props: Props): Promise<Artifacts> {
   if (DefaultPreset.HasApiSubfolder(presetProps)) {
     artifacts.entryFile = "entries/api";
     artifacts.apiHandler = "__sk__api.js:handler";
-    artifacts.apiFiles = [{ pattern: "api/**/*", cwd: ".stormkit" }];
+    artifacts.apiFiles = [{ pattern: "**/*", cwd: ".stormkit/api" }];
   }
 
   return artifacts;
