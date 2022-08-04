@@ -55,9 +55,16 @@ export interface Artifacts {
   clientFiles: Pattern[];
 
   /**
-   * List of files that will be upload to the lambda function. Glob pattern is supported.
+   * List of files that will be upload to the renderer function. Glob pattern is supported.
+   * This function contains logic for rendering your application on the server side.
    */
   serverFiles?: Pattern[];
+
+  /**
+   * List of files that will be uploaded to the api function. Glob pattern is supported.
+   * This function contains logic to serve your API.
+   */
+  apiFiles?: Pattern[];
 
   /**
    * List of node modules that will be packed using `npm-pack`.
@@ -69,6 +76,12 @@ export interface Artifacts {
    * file:handler name format. For instance, index.mjs:handler.
    */
   functionHandler?: string;
+
+  /**
+   * Entry file and exported function for the api entry file in file:handler
+   * name format. For instance, index.mjs:handler.
+   */
+  apiHandler?: string;
 }
 
 interface Props extends Omit<PresetProps, "packageJson" | "packageManager"> {}
@@ -123,8 +136,8 @@ export default async function (props: Props): Promise<Artifacts> {
   const artifacts = await preset.artifacts();
 
   if (DefaultPreset.HasApiSubfolder(presetProps)) {
-    artifacts.serverFiles = artifacts.serverFiles || [];
-    artifacts.serverFiles.push({ pattern: "api/**/*", cwd: ".stormkit" });
+    artifacts.apiHandler = "__sk__api.js:handler";
+    artifacts.apiFiles = [{ pattern: "api/**/*", cwd: ".stormkit" }];
   }
 
   return artifacts;

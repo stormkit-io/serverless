@@ -2,7 +2,6 @@ import type { NuxtConfig as NuxtConfiguration } from "@nuxt/types";
 import type { PresetInterface, PresetProps, Artifacts } from "../";
 import fs from "fs";
 import path from "path";
-import { getDependency } from "../../utils/pck";
 
 /**
  * NuxtPresetV3 for testing local applications. In production, nuxt 3
@@ -22,6 +21,7 @@ export default class NuxtPresetV3 implements PresetInterface {
     const buildDir = ".output";
 
     if (fs.existsSync(path.join(this.props.repoDir, buildDir, "server"))) {
+      artifacts.functionHandler = "index.mjs:handler";
       artifacts.serverFiles = artifacts.serverFiles || [];
       artifacts.serverFiles.push({
         pattern: "**/*",
@@ -40,7 +40,6 @@ export default class NuxtPresetV3 implements PresetInterface {
       artifacts.clientFiles.push({ pattern: "**/*", cwd: "static" });
     }
 
-    artifacts.functionHandler = "index.mjs:handler";
     return artifacts;
   }
 }
