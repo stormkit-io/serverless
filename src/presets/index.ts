@@ -136,7 +136,7 @@ export default async function (props: Props): Promise<Artifacts> {
   const artifacts = await preset.artifacts();
 
   if (DefaultPreset.HasApiSubfolder(presetProps)) {
-    artifacts.entryFile = "api.js";
+    artifacts.entryFile = "api";
     artifacts.apiHandler = "__sk__api.js:handler";
     artifacts.apiFiles = [{ pattern: "api/**/*", cwd: ".stormkit" }];
   }
