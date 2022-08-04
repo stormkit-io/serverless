@@ -62,12 +62,6 @@ export const handleSuccess = (
   app: App,
   event: NodeRequest
 ): Promise<NodeResponse> => {
-  const apiDir = path.join(__dirname, "api");
-
-  if (event.path?.match(/^\/api($|\/)/) && fs.existsSync(apiDir)) {
-    return handleApi(event, apiDir);
-  }
-
   // Add support for express apps
   if (app.hasOwnProperty("handle")) {
     // @ts-ignore

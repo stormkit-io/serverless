@@ -45,6 +45,7 @@ const entries: Configuration = {
     next: "./src/entries/next/server.ts",
     default: "./src/entries/default/server.ts",
     angular: "./src/entries/angular/server.ts",
+    api: "./src/entries/api/server.ts",
   },
   output: {
     filename: "entries/[name].js",
