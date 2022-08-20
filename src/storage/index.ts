@@ -23,7 +23,7 @@ type Filter = {
 type Operator = keyof Filter;
 
 interface StoreResponse {
-  recordId?: string;
+  recordIds?: string[];
   error?: string;
 }
 
@@ -109,22 +109,40 @@ const mapFilters = (
 class Storage {
   async store(
     keyName: string,
-    keyValue: Record<string, any>
+    keyValue: Record<string, any> | Record<string, any>[]
   ): Promise<StoreResponse> {
-    return await makeRequest<StoreResponse>({
+    const items: { keyValue: Record<string, any>; keyName: string }[] = [];
+
+    if (!Array.isArray(keyValue)) {
+      items.push({ keyValue, keyName });
+    } else {
+      keyValue.forEach((kv) => {
+        items.push({ keyName, keyValue: kv });
+      });
+    }
+
+    const response = await makeRequest<StoreResponse>({
       url: "/app/data-storage",
       body: {
-        keyName,
-        keyValue,
+        items,
       },
     });
+
+    // Save record id
+    if (response.recordIds) {
+      response.recordIds.forEach((recordId, index) => {
+        items[index].keyValue.recordId = recordId;
+      });
+    }
+
+    return response;
   }
 
   async fetch<T>(
     keyName: string,
     filters?: Record<string, Filter | Primitive>
-  ): Promise<T> {
-    return await makeRequest<T>({
+  ): Promise<(T & { recordId: string })[]> {
+    return await makeRequest<(T & { recordId: string })[]>({
       url: "/app/data-storage/query",
       body: {
         keyName,
