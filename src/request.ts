@@ -10,10 +10,25 @@ export interface NodeRequest {
   headers: Record<string, string>;
   remoteAddress?: string;
   remotePort?: string;
+  context: {
+    features?: Record<string, boolean>;
+    apiKey?: string;
+    envId?: string;
+  };
 }
+
+const populateGlobalSKObject = (event: NodeRequest) => {
+  global.sk = {
+    features: event.context.features,
+    apiKey: event.context.apiKey,
+    envId: event.context.envId,
+  };
+};
 
 class Request extends http.IncomingMessage {
   constructor(props: NodeRequest) {
+    populateGlobalSKObject(props);
+
     const socket = {
       readable: false,
       remoteAddress: props.remoteAddress,

@@ -47,6 +47,7 @@ export default (app: App): AwsAlbHandler =>
       method: event.httpMethod,
       headers: event.headers,
       body: event.body,
+      context: {},
     };
 
     try {

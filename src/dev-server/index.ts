@@ -4,6 +4,7 @@ import path from "path";
 import fs from "fs";
 import cp from "child_process";
 import express from "express";
+import dotenv from "dotenv";
 import { NodeResponse } from "~/response";
 
 const wrapper = `
@@ -64,6 +65,39 @@ const rootDir = ((): string => {
   return dir;
 })();
 
+const parseResponse = (
+  res: string
+): { logs: string[]; data?: NodeResponse } => {
+  const lines = res.split("\n");
+  const logs: string[] = [];
+
+  let data: NodeResponse | undefined;
+
+  lines
+    .filter((line) => line)
+    .forEach((line) => {
+      try {
+        const parsed = JSON.parse(line);
+
+        if (
+          typeof parsed.buffer !== "undefined" &&
+          typeof parsed.headers !== "undefined"
+        ) {
+          data = parsed;
+          return;
+        } else {
+          logs.push(parsed);
+        }
+      } catch {
+        logs.push(line);
+      }
+    });
+
+  return { logs, data };
+};
+
+dotenv.config();
+
 class DevServer {
   config: DevServerConfig;
 
@@ -119,6 +153,10 @@ class DevServer {
       path: req.url?.split("?")?.[0] || "/",
       body,
       headers,
+      context: {
+        envId: process.env.SK_ENV_ID,
+        apiKey: process.env.SK_API_KEY,
+      },
     };
 
     return request;
@@ -151,7 +189,7 @@ class DevServer {
         const request = await this._normalizeRequest(req);
         const root = path.join(rootDir, this.config.dir || "");
 
-        const data: NodeResponse = JSON.parse(
+        const response = parseResponse(
           cp
             .execSync(
               `ts-node -e '${wrapper
@@ -161,6 +199,14 @@ class DevServer {
             .toString("utf-8")
         );
 
+        response.logs.forEach((l) => console.log(l));
+
+        const data = response.data;
+
+        if (!data) {
+          throw new Error("Missing response data");
+        }
+
         Object.keys(data.headers || {}).forEach((key) => {
           res.set(key, data.headers[key]);
         });
@@ -168,9 +214,8 @@ class DevServer {
         res.status(data.status);
         res.send(Buffer.from(data.buffer || "", "base64").toString("utf-8"));
       } catch (e) {
-        console.error(e);
-        res.writeHead(500);
-        res.write("Something went wrong. Check the logs.");
+        res.status(500);
+        res.send((e as Error).message);
         res.end();
       }
     });

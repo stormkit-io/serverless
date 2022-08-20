@@ -4,6 +4,7 @@ import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
 import http from "http";
 export { handleApi } from "./utils";
+export { default as storage } from "./storage";
 
 export type App = (req: http.IncomingMessage, res: http.ServerResponse) => void;
 
