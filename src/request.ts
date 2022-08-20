@@ -18,11 +18,13 @@ export interface NodeRequest {
 }
 
 const populateGlobalSKObject = (event: NodeRequest) => {
-  global.sk = {
-    features: event.context.features,
-    apiKey: event.context.apiKey,
-    envId: event.context.envId,
-  };
+  if (event.context) {
+    global.sk = {
+      features: event.context.features,
+      apiKey: event.context.apiKey,
+      envId: event.context.envId,
+    };
+  }
 };
 
 class Request extends http.IncomingMessage {
