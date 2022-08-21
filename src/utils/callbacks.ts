@@ -7,7 +7,6 @@ import path from "path";
 import Request from "../request";
 import Response from "../response";
 import { matchPath } from "./filesys";
-import { load } from "./load";
 
 export const handleError = (callback: AwsCallback) => (e: Error) => {
   let msg = e && e.message ? e.message : undefined;
@@ -46,10 +45,7 @@ export const handleApi = (
     const file = matchPath(apiDir, requestPath);
 
     if (file) {
-      return load<{ default: App }>(path.join(file.path, file.name)).default(
-        req,
-        res
-      );
+      return require(path.join(file.path, file.name)).default(req, res);
     }
 
     res.writeHead(404, "Not found");
