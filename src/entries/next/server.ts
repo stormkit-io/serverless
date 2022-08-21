@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import http from "http";
 import serverless from "../../serverless";
-import { load } from "../../utils";
 
 interface NextServerOpts {
   dev: boolean;
@@ -57,7 +56,7 @@ if (fs.existsSync(path.join(root, ".next/serverless"))) {
   serverConfig.conf.target = "serverless";
 }
 
-const Next = load<{ default: any }>("next/dist/server/next-server").default;
+const Next = require("next/dist/server/next-server").default;
 const next = new Next(serverConfig);
 const handler = next.getRequestHandler();
 

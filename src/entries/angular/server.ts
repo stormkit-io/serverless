@@ -1,7 +1,6 @@
 import path from "path";
 import fs from "fs";
 import serverless from "../../serverless";
-import { load } from "../../utils";
 
 interface AngularJSON {
   version: string;
@@ -43,5 +42,5 @@ if (!fs.existsSync(path.join(__dirname, `${serverFileName}.js`))) {
   );
 }
 
-const { app: ngApp } = load(`./${serverFileName}`);
+const { app: ngApp } = require(`./${serverFileName}`);
 exports.renderer = serverless(ngApp());

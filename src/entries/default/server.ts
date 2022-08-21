@@ -1,14 +1,13 @@
 import type { App } from "~/serverless";
 import http from "http";
 import serverless from "../../serverless";
-import { load } from "../../utils";
 import { serverlessLookupFiles } from "../../presets/default/constants";
 
 let app: App | undefined;
 
 for (let file of serverlessLookupFiles) {
   try {
-    const mod = load(`./${file}`);
+    const mod = require(`./${file}`);
     // @ts-ignore
     app = mod.default || mod;
     break;
