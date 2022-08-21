@@ -93,7 +93,7 @@ const packageNameToPresetMap: Record<string, any> = {
   "@angular/core": AngularPreset,
 };
 
-export default async function (props: Props): Promise<Artifacts> {
+export const artifacts = async (props: Props): Promise<Artifacts> => {
   let packageManager: "npm" | "yarn";
   let packageJson: PackageJson;
   let preset: PresetInterface | undefined;
@@ -142,4 +142,4 @@ export default async function (props: Props): Promise<Artifacts> {
   }
 
   return artifacts;
-}
+};
