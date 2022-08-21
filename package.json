@@ -66,14 +66,8 @@
     "yargs": "^17.5.1"
   },
   "files": [
-    "dist/serverless.js",
-    "dist/serverless.d.ts",
-    "dist/dev-server/index.d.ts",
-    "dist/dev-server/index.js",
-    "dist/entries",
-    "dist/presets/index.js",
-    "dist/presets/index.d.ts",
-    "dist/storage/index.d.ts",
+    "dist/**/*.js",
+    "dist/*.d.ts",
     "LICENSE",
     "README.md"
   ],
