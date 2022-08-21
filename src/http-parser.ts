@@ -1,4 +1,4 @@
-import { HTTPParser, HeaderInfo, HeaderObject } from "http-parser-js";
+import { HTTPParser, HeaderInfo } from "http-parser-js";
 import http from "http";
 
 interface ParsedMessage {
