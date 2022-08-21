@@ -68,7 +68,7 @@
     "dist/entries",
     "dist/presets/index.js",
     "dist/presets/index.d.ts",
-    "dist/src/storage/index.d.ts",
+    "dist/storage/index.d.ts",
     "LICENSE",
     "README.md"
   ],
