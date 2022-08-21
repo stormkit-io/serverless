@@ -1,7 +1,7 @@
 /**
  * THIS FILE IS UNDER DEVELOPMENT - DO NOT USE IT IN PRODUCTION.
  */
-import fetch from "node-fetch";
+import axios from "axios";
 
 const API_KEY_MISSING =
   "Stormkit missing API key. Go to your application > settings to generate a new key.";
@@ -54,19 +54,22 @@ const makeRequest = async <T>({
     throw new Error(API_KEY_MISSING);
   }
 
-  const res = await fetch(`${ENDPOINT}${url}?eid=${conf.envId}`, {
+  const res = await axios(`${url}?eid=${conf.envId}`, {
+    baseURL: ENDPOINT,
     method,
     headers: {
       Authorization: `${conf.apiKey}`,
     },
-    body: JSON.stringify(body),
+    data: body,
   });
 
+  const data = res.data;
+
   if (res.status !== 200 && res.status !== 201) {
-    throw new Error(`Response returned ${res.status}: ${await res.text()}`);
+    throw new Error(`Response returned ${res.status}: ${data}`);
   }
 
-  return (await res.json()) as T;
+  return data as T;
 };
 
 /**
