@@ -1,5 +1,5 @@
 import type { NuxtConfig as NuxtConfiguration } from "@nuxt/types";
-import type { PresetInterface, PresetProps, Artifacts } from "../";
+import type { PresetInterface, PresetProps, Artifacts } from "../presets";
 import fs from "fs";
 import cp from "child_process";
 import path from "path";

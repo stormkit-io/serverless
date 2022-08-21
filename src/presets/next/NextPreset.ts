@@ -1,5 +1,10 @@
 import type { NextConfig } from "next/types";
-import type { PresetInterface, PresetProps, Artifacts, Pattern } from "../";
+import type {
+  PresetInterface,
+  PresetProps,
+  Artifacts,
+  Pattern,
+} from "../presets";
 import fs from "fs";
 import path from "path";
 import jiti from "jiti";

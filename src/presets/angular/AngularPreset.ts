@@ -1,7 +1,28 @@
-import type { PresetInterface, PresetProps, Artifacts } from "../";
-import type { AngularJSON } from "./types.d";
+import type { PresetInterface, PresetProps, Artifacts } from "../presets";
 import path from "path";
 import fs from "fs";
+
+export interface AngularJSON {
+  version: string;
+  defaultProject: string;
+  projects: {
+    [projectName: string]: {
+      architect?: {
+        build?: {
+          options?: {
+            outputPath: string;
+          };
+        };
+        server?: {
+          options?: {
+            outputPath: string;
+            main: string;
+          };
+        };
+      };
+    };
+  };
+}
 
 export default class AngularPreset implements PresetInterface {
   props: PresetProps;
