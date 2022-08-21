@@ -1,6 +1,6 @@
+import type { Socket } from "net";
 import http from "http";
 import { Readable } from "stream";
-import type { Socket } from "net";
 
 export interface NodeRequest {
   url: string; // /relative/path?query=value#hash
