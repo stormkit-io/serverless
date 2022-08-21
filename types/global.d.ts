@@ -1,6 +1,7 @@
 export interface SKObject {
   envId?: string;
   apiKey?: string;
+  baseUrl?: string;
   features?: Record<string, boolean>;
 }
 

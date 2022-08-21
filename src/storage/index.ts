@@ -7,8 +7,6 @@ import dotenv from "dotenv";
 const API_KEY_MISSING =
   "Stormkit missing API key. Go to your application > settings to generate a new key.";
 
-const ENDPOINT = process.env.SK_DATA_STORE_URL || "https://api.stormkit.io";
-
 type Primitive = string | number | boolean;
 
 type Filter = {
@@ -55,6 +53,7 @@ const makeRequest = async <T>({
     global.sk = {
       apiKey: process.env.SK_API_KEY,
       envId: process.env.SK_ENV_ID,
+      baseUrl: process.env.SK_DATA_STORE_URL,
     };
   }
 
@@ -65,7 +64,7 @@ const makeRequest = async <T>({
   }
 
   const res = await axios(`${url}?eid=${conf.envId}`, {
-    baseURL: ENDPOINT,
+    baseURL: conf.baseUrl,
     method,
     headers: {
       Authorization: `${conf.apiKey}`,
