@@ -3,10 +3,7 @@
     "files": true
   },
   "compilerOptions": {
-    "target": "es5",
     "lib": ["es6"],
-    "module": "commonjs",
-    "resolveJsonModule": true,
     "allowJs": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -16,7 +13,7 @@
     "noEmit": false,
     "emitDeclarationOnly": false,
     "declaration": true,
-    "declarationDir": "dist",
+    "declarationDir": "dist/types",
     "declarationMap": false,
     "skipLibCheck": true,
     "sourceMap": false,

@@ -1,9 +1,9 @@
-declare var __non_webpack_require__ = require;
-
-interface SKObject {
+export interface SKObject {
   envId?: string;
   apiKey?: string;
   features?: Record<string, boolean>;
 }
 
-declare var sk: SKObject;
+declare global {
+  var sk: SKObject;
+}
