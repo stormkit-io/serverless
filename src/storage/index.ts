@@ -33,6 +33,16 @@ interface MakeRequestProps {
   body: Record<string, any>;
 }
 
+interface APIFilter {
+  prop: string;
+  op: Operator;
+  val: Primitive | string[] | number[];
+}
+
+interface FetchOptions {
+  limit: number;
+}
+
 const makeRequest = async <T>({
   url,
   body,
@@ -58,12 +68,6 @@ const makeRequest = async <T>({
 
   return (await res.json()) as T;
 };
-
-interface APIFilter {
-  prop: string;
-  op: Operator;
-  val: Primitive | string[] | number[];
-}
 
 /**
  * { category: "real_estate", price: { ">": 12, "<": 20 }}
@@ -106,7 +110,7 @@ const mapFilters = (
   return apiFilters;
 };
 
-class Storage {
+const storage = {
   async store(
     keyName: string,
     keyValue: Record<string, any> | Record<string, any>[]
@@ -136,30 +140,51 @@ class Storage {
     }
 
     return response;
-  }
+  },
 
   async fetch<T>(
     keyName: string,
-    filters?: Record<string, Filter | Primitive>
+    filters?: Record<string, Filter | Primitive>,
+    options?: FetchOptions
   ): Promise<(T & { recordId: string })[]> {
     return await makeRequest<(T & { recordId: string })[]>({
       url: "/app/data-storage/query",
       body: {
         keyName,
         filters: mapFilters(filters),
+        limit: options?.limit,
       },
     });
-  }
+  },
 
-  async remove(recordId: string): Promise<{ ok: boolean }> {
+  async fetchOne<T>(
+    keyName: string,
+    filters?: Record<string, Filter | Primitive>
+  ): Promise<T & { recordId: string }> {
+    return (await storage.fetch<T>(keyName, filters, { limit: 1 }))[0];
+  },
+
+  async removeByKey(keyName: string): Promise<{ ok: boolean }> {
     return await makeRequest<{ ok: boolean }>({
       url: "/app/data-storage",
       method: "DELETE",
       body: {
-        recordId,
+        keyName,
       },
     });
-  }
-}
+  },
 
-export default new Storage();
+  async removeByRecordId(
+    recordIds: string[] | string
+  ): Promise<{ ok: boolean }> {
+    return await makeRequest<{ ok: boolean }>({
+      url: "/app/data-storage",
+      method: "DELETE",
+      body: {
+        recordIds: Array.isArray(recordIds) ? recordIds : [recordIds],
+      },
+    });
+  },
+};
+
+export default storage;
