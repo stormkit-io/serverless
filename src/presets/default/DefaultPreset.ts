@@ -1,4 +1,4 @@
-import type { PresetInterface, PresetProps, Artifacts } from "../";
+import type { PresetInterface, PresetProps, Artifacts } from "../presets";
 import fs from "fs";
 import path from "path";
 import { serverlessLookupFiles } from "./constants";
