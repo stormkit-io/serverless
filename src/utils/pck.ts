@@ -1,4 +1,4 @@
-import type { PackageJson } from "../presets";
+import type { PackageJson } from "../presets/presets";
 
 export const getDependency = (
   pck: PackageJson,
