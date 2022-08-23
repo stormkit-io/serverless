@@ -4,6 +4,20 @@
 import axios from "axios";
 import dotenv from "dotenv";
 
+dotenv.config({ path: "stormkit.env" });
+
+interface Configuration {
+  envId?: string;
+  apiKey?: string;
+  baseUrl?: string;
+}
+
+const conf: Configuration = {
+  apiKey: process.env.SK_API_KEY,
+  envId: process.env.SK_ENV_ID,
+  baseUrl: process.env.SK_DATA_STORE_URL || "https://api.stormkit.io",
+};
+
 const API_KEY_MISSING =
   "Stormkit missing API key. Go to your application > settings to generate a new key.";
 
@@ -47,18 +61,6 @@ const makeRequest = async <T>({
   body,
   method = "POST",
 }: MakeRequestProps): Promise<T> => {
-  if (!global.sk) {
-    dotenv.config();
-
-    global.sk = {
-      apiKey: process.env.SK_API_KEY,
-      envId: process.env.SK_ENV_ID,
-      baseUrl: process.env.SK_DATA_STORE_URL,
-    };
-  }
-
-  const conf = global.sk;
-
   if (!conf.apiKey) {
     throw new Error(API_KEY_MISSING);
   }
