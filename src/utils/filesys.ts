@@ -62,7 +62,7 @@ export const matchPath = (
 
     // /users/[id]/index.get.js => /users/:id (if method matches)
     if (parsed.method !== "all" && parsed.method !== method) {
-      return;
+      continue;
     }
 
     if (parsed.name === "index") {
