@@ -3,10 +3,11 @@ import type { NodeResponse } from "../response";
 import type { NodeRequest } from "../request";
 import type { AwsCallback } from "../handlers/aws-alb";
 import type { App } from "../serverless";
+import type { WalkFile } from "./filesys";
 import path from "path";
 import Request from "../request";
 import Response from "../response";
-import { matchPath, walkTree, WalkFile } from "./filesys";
+import { matchPath, walkTree } from "./filesys";
 
 export const handleError = (callback: AwsCallback) => (e: Error) => {
   let msg = e && e.message ? e.message : undefined;
