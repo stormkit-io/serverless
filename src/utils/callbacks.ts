@@ -6,7 +6,7 @@ import type { App } from "../serverless";
 import path from "path";
 import Request from "../request";
 import Response from "../response";
-import { matchPath } from "./filesys";
+import { matchPath, walkTree, WalkFile } from "./filesys";
 
 export const handleError = (callback: AwsCallback) => (e: Error) => {
   let msg = e && e.message ? e.message : undefined;
@@ -29,10 +29,16 @@ export const handleError = (callback: AwsCallback) => (e: Error) => {
   });
 };
 
+let cachedFiles: WalkFile[];
+
 export const handleApi = (
   event: NodeRequest,
   apiDir: string
 ): Promise<NodeResponse> => {
+  if (typeof cachedFiles === "undefined") {
+    cachedFiles = walkTree(apiDir);
+  }
+
   return new Promise((resolve) => {
     const req = new Request(event);
     const res = new Response(req);
@@ -42,7 +48,7 @@ export const handleApi = (
     });
 
     const requestPath = req.url?.split("?")?.[0]?.replace("/api", "") || "/";
-    const file = matchPath(apiDir, requestPath);
+    const file = matchPath(cachedFiles, requestPath, req.method);
 
     if (file) {
       return require(path.join(file.path, file.name)).default(req, res);
