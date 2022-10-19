@@ -12,7 +12,11 @@ for (let file of serverlessLookupFiles) {
     app = mod.default || mod;
     break;
   } catch (e) {
-    console.error(e);
+    if (e instanceof Error) {
+      console.error(e.message);
+    } else {
+      console.error(e);
+    }
   }
 }
 
