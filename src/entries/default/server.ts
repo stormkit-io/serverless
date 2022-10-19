@@ -11,7 +11,9 @@ for (let file of serverlessLookupFiles) {
     // @ts-ignore
     app = mod.default || mod;
     break;
-  } catch {}
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 if (!app) {
