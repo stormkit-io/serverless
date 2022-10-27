@@ -1,11 +1,11 @@
-import type { App } from "../serverless";
+import type { App, NodeContext } from "../serverless";
 import type { NodeRequest } from "../request";
-import type { AwsContext, AwsCallback } from "./aws-alb";
+import type { AwsCallback } from "./aws-alb";
 import { handleSuccess, handleError } from "../utils";
 
 export type StormkitHandler = (
   request: NodeRequest,
-  context: AwsContext,
+  context: NodeContext,
   callback: AwsCallback
 ) => Promise<void>;
 
@@ -15,7 +15,7 @@ export default (app: App): StormkitHandler =>
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      callback(null, await handleSuccess(app, event));
+      callback(null, await handleSuccess(app, event, context));
     } catch (e) {
       handleError(callback)(e as Error);
     }

@@ -1,16 +1,12 @@
-import type { App } from "../serverless";
+import type { App, NodeContext } from "../serverless";
 import type { NodeRequest } from "../request";
 import { handleSuccess, handleError } from "../utils";
 
 export type AwsCallback = (e: Error | null, data: any) => void;
 
-export interface AwsContext {
-  callbackWaitsForEmptyEventLoop?: boolean;
-}
-
 export type AwsAlbHandler = (
   request: ALBRequest,
-  context: AwsContext,
+  context: NodeContext,
   callback: AwsCallback
 ) => Promise<void>;
 
@@ -51,7 +47,7 @@ export default (app: App): AwsAlbHandler =>
     };
 
     try {
-      callback(null, await handleSuccess(app, request));
+      callback(null, await handleSuccess(app, request, context));
     } catch (e) {
       handleError(callback)(e as Error);
     }

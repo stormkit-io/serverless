@@ -2,7 +2,7 @@ import type { Express } from "express";
 import type { NodeResponse } from "../response";
 import type { NodeRequest } from "../request";
 import type { AwsCallback } from "../handlers/aws-alb";
-import type { App } from "../serverless";
+import type { App, NodeContext } from "../serverless";
 import type { WalkFile } from "./filesys";
 import path from "path";
 import Request from "../request";
@@ -62,7 +62,8 @@ export const handleApi = (
 
 export const handleSuccess = (
   app: App,
-  event: NodeRequest
+  event: NodeRequest,
+  context: NodeContext
 ): Promise<NodeResponse> => {
   // Add support for express apps
   if (app.hasOwnProperty("handle")) {
@@ -78,6 +79,6 @@ export const handleSuccess = (
       resolve(data);
     });
 
-    app(req, res);
+    app(req, res, context);
   });
 };

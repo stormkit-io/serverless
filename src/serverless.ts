@@ -6,7 +6,13 @@ import http from "http";
 export { handleApi } from "./utils";
 export { default as storage } from "./storage";
 
-export type App = (req: http.IncomingMessage, res: http.ServerResponse) => void;
+export type NodeContext = Record<string, unknown>;
+
+export type App = (
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+  context?: NodeContext
+) => void;
 
 type HandlerType = "awsAlb" | "stormkit";
 
