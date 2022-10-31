@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import type { StormkitHandler } from "./handlers/stormkit";
 import type { NodeRequest } from "./request";
 import type { App, NodeContext } from "./serverless";
 import stormkitHandler from "./handlers/stormkit";
