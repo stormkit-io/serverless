@@ -4,7 +4,7 @@ import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
 import http from "http";
 export { handleApi } from "./utils";
-export { matchPath } from "./utils/filesys";
+export { matchPath, walkTree } from "./utils/filesys";
 export { default as storage } from "./storage";
 
 export type NodeContext = Record<string, unknown>;
