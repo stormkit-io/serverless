@@ -6,7 +6,7 @@ import dts from "rollup-plugin-dts";
 
 const inputs = {
   serverless: "./src/serverless.ts",
-  "serverless/express": "./src/serverless_express.ts",
+  express: "./src/serverless_express.ts",
   presets: "./src/presets/presets.ts",
   "dev-server": "./src/dev-server/dev-server.ts",
   "entries/nuxt-v2": "./src/entries/nuxt/server-v2.ts",
@@ -29,6 +29,7 @@ export default [
   {
     input: {
       serverless: "./dist/types/serverless.d.ts",
+      express: "./dist/types/serverless_express.d.ts",
       presets: "./dist/types/presets/presets.d.ts",
       "dev-server": "./dist/types/dev-server/dev-server.d.ts",
     },
