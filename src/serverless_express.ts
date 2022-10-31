@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import type { StormkitHandler } from "./handlers/stormkit";
 import type { NodeRequest } from "./request";
 import type { App, NodeContext } from "./serverless";
-import serverless from "./serverless";
+import stormkitHandler from "./handlers/stormkit";
 export { fileSystemRouting as matchPath } from "./utils/filesys";
 
 const transformToNodeRequest = (req: Request): NodeRequest => {
@@ -22,7 +22,7 @@ export const serverlessExpress = (
   renderFn: App,
   context?: NodeContext
 ) => {
-  const handler = serverless(renderFn, "stormkit") as StormkitHandler;
+  const handler = stormkitHandler(renderFn);
 
   handler(
     transformToNodeRequest(req),
