@@ -56,7 +56,7 @@ export const matchPath = (
 
   for (const file of files) {
     // /users/[id]/index.js => /users/:id
-    let normalized = file.rel.replace(/\[(.*)\]/g, ":$1");
+    let normalized = file.rel.replace(/\[([a-zA-Z0-9_\.:-]*)\]/g, ":$1");
 
     const parsed = parseFileName(file.name);
 
