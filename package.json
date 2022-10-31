@@ -9,7 +9,7 @@
     "test:watch": "jest --watch --onlyChanged",
     "dev": "nodemon --config nodemon.json ./src/dev-server/dev-server.ts",
     "build": "rm -rf dist/ && rollup --config rollup.config.ts && rm -rf dist/types",
-    "np": "npm run build && np"
+    "np": "npm run build && cp package.json dist && cd dist && np"
   },
   "repository": {
     "type": "git",
@@ -30,9 +30,6 @@
   "dependencies": {
     "ts-node": "^10.9.1",
     "typescript": "^4.8.3"
-  },
-  "np": {
-    "contents": "dist"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.18.2",
@@ -71,8 +68,8 @@
     "yargs": "^17.5.1"
   },
   "files": [
-    "dist/**/*.js",
-    "dist/*.d.ts",
+    "**/*.js",
+    "*.d.ts",
     "LICENSE",
     "README.md"
   ],
