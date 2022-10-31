@@ -7,10 +7,10 @@ export interface NodeRequest {
   path: string; // /relative/path
   body: string;
   method: string;
-  headers: Record<string, string>;
+  headers: http.IncomingHttpHeaders;
   remoteAddress?: string;
   remotePort?: string;
-  context: {
+  context?: {
     features?: Record<string, boolean>;
     apiKey?: string;
     envId?: string;
@@ -43,7 +43,14 @@ class Request extends http.IncomingMessage {
       method: props.method,
       headers: Object.keys(props.headers).reduce(
         (obj: Record<string, string>, key: string) => {
-          obj[key.toLowerCase()] = props.headers[key];
+          const value = props.headers[key];
+
+          if (Array.isArray(value)) {
+            obj[key.toLowerCase()] = value.join(",");
+          } else if (typeof value === "string" && value) {
+            obj[key.toLowerCase()] = value;
+          }
+
           return obj;
         },
         {}
@@ -52,8 +59,16 @@ class Request extends http.IncomingMessage {
 
     this.rawHeaders = Object.keys(props.headers).reduce(
       (array: string[], key: string) => {
-        array.push(key);
-        array.push(props.headers[key]);
+        const value = props.headers[key];
+
+        if (Array.isArray(value)) {
+          value.forEach((v) => {
+            array.push(key, v);
+          });
+        } else if (value) {
+          array.push(key, value);
+        }
+
         return array;
       },
       []
