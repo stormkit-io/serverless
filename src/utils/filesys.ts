@@ -76,3 +76,11 @@ export const matchPath = (
     }
   }
 };
+
+export const fileSystemRouting = (
+  directory: string,
+  requestPath: string,
+  requestMethod: string
+): string | undefined => {
+  return matchPath(walkTree(directory), requestPath, requestMethod)?.rel;
+};
