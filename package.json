@@ -2,8 +2,8 @@
   "name": "@stormkit/serverless",
   "version": "0.10.0",
   "description": "Export node.js applications into serverless compatible functions",
-  "main": "dist/serverless.js",
-  "types": "dist/serverless.d.ts",
+  "main": "serverless.js",
+  "types": "serverless.d.ts",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch --onlyChanged",
@@ -30,6 +30,9 @@
   "dependencies": {
     "ts-node": "^10.9.1",
     "typescript": "^4.8.3"
+  },
+  "np": {
+    "contents": "dist"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.18.2",
