@@ -9,7 +9,7 @@
     "test:watch": "jest --watch --onlyChanged",
     "dev": "nodemon --config nodemon.json ./src/dev-server/dev-server.ts",
     "build": "rm -rf dist/ && rollup --config rollup.config.ts && rm -rf dist/types",
-    "np": "npm run build && np --no-publish && cp ./package.json ./dist/package.json"
+    "np": "npm run build && np --no-publish && cp ./package.json ./dist/package.json && cd ./dist && npm run publish"
   },
   "repository": {
     "type": "git",
