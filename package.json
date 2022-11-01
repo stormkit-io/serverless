@@ -72,9 +72,6 @@
     "tslib": "^2.4.0",
     "yargs": "^17.5.1"
   },
-  "files": [
-    "dist/**/*"
-  ],
   "publishConfig": {
     "access": "public"
   }
