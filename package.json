@@ -9,7 +9,7 @@
     "test:watch": "jest --watch --onlyChanged",
     "dev": "nodemon --config nodemon.json ./src/dev-server/dev-server.ts",
     "build": "rm -rf dist/ && rollup --config rollup.config.ts && rm -rf dist/types",
-    "np": "npm run build && cp package.json dist/package.json && np"
+    "np": "npm run build && np --no-publish && cp package.json dist/"
   },
   "repository": {
     "type": "git",
@@ -73,10 +73,7 @@
     "yargs": "^17.5.1"
   },
   "files": [
-    "**/*.js",
-    "*.d.ts",
-    "LICENSE",
-    "README.md"
+    "dist/**/*"
   ],
   "publishConfig": {
     "access": "public"
