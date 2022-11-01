@@ -1,6 +1,6 @@
 {
   "name": "@stormkit/serverless",
-  "version": "0.12.3",
+  "version": "0.12.4",
   "description": "Export node.js applications into serverless compatible functions",
   "main": "serverless.js",
   "types": "serverless.d.ts",
@@ -9,7 +9,7 @@
     "test:watch": "jest --watch --onlyChanged",
     "dev": "nodemon --config nodemon.json ./src/dev-server/dev-server.ts",
     "build": "rm -rf dist/ && rollup --config rollup.config.ts && rm -rf dist/types",
-    "np": "npm run build && np --no-publish && cp ./package.json ./dist/package.json && cd ./dist && npm run publish"
+    "np": "npm run build && np --no-publish && cp ./package.json ./dist/package.json && cd ./dist && npm publish"
   },
   "repository": {
     "type": "git",
