@@ -28,10 +28,10 @@ export default [
   })),
   {
     input: {
-      serverless: "./dist/types/serverless.d.ts",
-      presets: "./dist/types/presets/presets.d.ts",
-      router: "./dist/types/router.d.ts",
-      "dev-server": "./dist/types/dev-server/dev-server.d.ts",
+      serverless: "./dist/types/src/serverless.d.ts",
+      presets: "./dist/types/src/presets/presets.d.ts",
+      router: "./dist/types/src/router.d.ts",
+      "dev-server": "./dist/types/src/dev-server/dev-server.d.ts",
     },
     output: {
       dir: "dist",
