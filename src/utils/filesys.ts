@@ -34,7 +34,9 @@ export const walkTree = (
 
 type Method = "get" | "post" | "patch" | "put" | "delete" | "head" | "all";
 
-const parseFileName = (fileName: string): { name: string; method: Method } => {
+export const parseFileName = (
+  fileName: string
+): { name: string; method: Method } => {
   const pieces = fileName.split(".");
 
   if (pieces.length <= 2) {
@@ -47,6 +49,20 @@ const parseFileName = (fileName: string): { name: string; method: Method } => {
   };
 };
 
+// /users/[id]/index.js => /users/:id
+export const fileToRoute = (file: string): string => {
+  const fileName = file.split("/").pop()?.split(".")[0];
+  let normalized = file.replace(/\[([a-zA-Z0-9_\.:-]*)\]/g, ":$1");
+
+  if (fileName === "index") {
+    normalized = path.dirname(normalized);
+  } else {
+    normalized = normalized.split(".")[0];
+  }
+
+  return path.join("/", normalized);
+};
+
 export const matchPath = (
   files: WalkFile[],
   requestPath: string,
@@ -55,9 +71,6 @@ export const matchPath = (
   const method = requestMethod.toLowerCase();
 
   for (const file of files) {
-    // /users/[id]/index.js => /users/:id
-    let normalized = file.rel.replace(/\[([a-zA-Z0-9_\.:-]*)\]/g, ":$1");
-
     const parsed = parseFileName(file.name);
 
     // /users/[id]/index.get.js => /users/:id (if method matches)
@@ -65,13 +78,9 @@ export const matchPath = (
       continue;
     }
 
-    if (parsed.name === "index") {
-      normalized = path.dirname(normalized);
-    } else {
-      normalized = normalized.split(".")[0];
-    }
+    const route = fileToRoute(file.rel);
 
-    if (match(path.join("/", normalized), requestPath).matches) {
+    if (match(route, requestPath).matches) {
       return file;
     }
   }
