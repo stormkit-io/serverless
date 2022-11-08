@@ -1,6 +1,6 @@
 {
   "name": "@stormkit/serverless",
-  "version": "0.12.7",
+  "version": "0.12.8",
   "description": "Export node.js applications into serverless compatible functions",
   "main": "serverless.js",
   "types": "serverless.d.ts",
