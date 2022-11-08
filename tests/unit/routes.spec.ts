@@ -5,19 +5,10 @@ describe("~/router", () => {
   const apiFolder = path.join(__dirname, "../../api");
 
   test("#generateRoutes - clientSide", () => {
-    expect(generateRoutes(apiFolder)).toEqual({
-      "/404": "/404.ts",
-      "/README": "/README.md",
-      "/": "/index.ts",
-    });
+    expect(generateRoutes(apiFolder)).toMatchSnapshot();
   });
 
   test("#generateRoutes - serverSide", () => {
-    expect(generateRoutes(apiFolder, { serverSide: true })).toEqual({
-      "/404": "/404.ts",
-      "/README": "/README.md",
-      "/": "/index.ts",
-      "/user/:id": "/user/[id]/index.post.ts",
-    });
+    expect(generateRoutes(apiFolder, { serverSide: true })).toMatchSnapshot();
   });
 });

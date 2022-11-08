@@ -1,3 +1,4 @@
+import type { Method } from "./utils/filesys";
 import path from "path";
 import {
   matchPath as mp,
@@ -18,12 +19,18 @@ interface GenerateRoutesOptions {
   serverSide: boolean;
 }
 
+interface Route {
+  path: string;
+  file: string;
+  method?: Method;
+}
+
 export const generateRoutes = (
   directory: string,
   options?: GenerateRoutesOptions
-): Record<string, string> => {
+): Route[] => {
   const tree = walkTree(directory);
-  const routes: Record<string, string> = {};
+  const routes: Route[] = [];
 
   tree.forEach((file) => {
     const route = fileToRoute(file.rel);
@@ -34,7 +41,16 @@ export const generateRoutes = (
       parsed.method === "get" ||
       options?.serverSide === true
     ) {
-      routes[route] = path.join("/", file.rel);
+      const r: Route = {
+        file: path.join("/", file.rel),
+        path: route,
+      };
+
+      if (options?.serverSide === true) {
+        r.method = parsed.method;
+      }
+
+      routes.push(r);
     }
   });
 

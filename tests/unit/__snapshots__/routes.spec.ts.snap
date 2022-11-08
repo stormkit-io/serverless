@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`~/router #generateRoutes - clientSide 1`] = `
+Array [
+  Object {
+    "file": "/404.ts",
+    "path": "/404",
+  },
+  Object {
+    "file": "/README.md",
+    "path": "/README",
+  },
+  Object {
+    "file": "/index.ts",
+    "path": "/",
+  },
+  Object {
+    "file": "/blog/about-me.ts",
+    "path": "/blog/about-me",
+  },
+  Object {
+    "file": "/blog/[name]/index.ts",
+    "path": "/blog/:name",
+  },
+  Object {
+    "file": "/blog/[name]/[date]/index.ts",
+    "path": "/blog/:name/:date",
+  },
+  Object {
+    "file": "/blog/[name]/[date]/list.ts",
+    "path": "/blog/:name/:date/list",
+  },
+  Object {
+    "file": "/user/index.ts",
+    "path": "/user",
+  },
+  Object {
+    "file": "/user/token.ts",
+    "path": "/user/token",
+  },
+  Object {
+    "file": "/user/[id]/index.get.ts",
+    "path": "/user/:id",
+  },
+]
+`;
+
+exports[`~/router #generateRoutes - serverSide 1`] = `
+Array [
+  Object {
+    "file": "/404.ts",
+    "method": "all",
+    "path": "/404",
+  },
+  Object {
+    "file": "/README.md",
+    "method": "all",
+    "path": "/README",
+  },
+  Object {
+    "file": "/index.head.ts",
+    "method": "head",
+    "path": "/",
+  },
+  Object {
+    "file": "/index.put.ts",
+    "method": "put",
+    "path": "/",
+  },
+  Object {
+    "file": "/index.ts",
+    "method": "all",
+    "path": "/",
+  },
+  Object {
+    "file": "/blog/about-me.ts",
+    "method": "all",
+    "path": "/blog/about-me",
+  },
+  Object {
+    "file": "/blog/[name]/index.ts",
+    "method": "all",
+    "path": "/blog/:name",
+  },
+  Object {
+    "file": "/blog/[name]/[date]/index.ts",
+    "method": "all",
+    "path": "/blog/:name/:date",
+  },
+  Object {
+    "file": "/blog/[name]/[date]/list.ts",
+    "method": "all",
+    "path": "/blog/:name/:date/list",
+  },
+  Object {
+    "file": "/user/index.ts",
+    "method": "all",
+    "path": "/user",
+  },
+  Object {
+    "file": "/user/token.ts",
+    "method": "all",
+    "path": "/user/token",
+  },
+  Object {
+    "file": "/user/[id]/index.get.ts",
+    "method": "get",
+    "path": "/user/:id",
+  },
+  Object {
+    "file": "/user/[id]/index.post.ts",
+    "method": "post",
+    "path": "/user/:id",
+  },
+]
+`;

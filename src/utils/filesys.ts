@@ -13,26 +13,41 @@ export const walkTree = (
   tree: string[] = []
 ): WalkFile[] => {
   const results: WalkFile[] = [];
+  const files = fs.readdirSync(directory);
 
-  for (const fileName of fs.readdirSync(directory)) {
+  const dirs: string[] = [];
+
+  for (const fileName of files) {
     const filePath = path.join(directory, fileName);
     const fileStats = fs.statSync(filePath);
 
-    if (fileStats.isDirectory()) {
-      results.push(...walkTree(filePath, [...tree, fileName]));
-    } else {
+    if (!fileStats.isDirectory()) {
       results.push({
         name: fileName,
         path: directory,
         rel: path.join(...tree, fileName),
       });
+    } else {
+      dirs.push(fileName);
     }
+  }
+
+  for (const dirName of dirs) {
+    const filePath = path.join(directory, dirName);
+    results.push(...walkTree(filePath, [...tree, dirName]));
   }
 
   return results;
 };
 
-type Method = "get" | "post" | "patch" | "put" | "delete" | "head" | "all";
+export type Method =
+  | "get"
+  | "post"
+  | "patch"
+  | "put"
+  | "delete"
+  | "head"
+  | "all";
 
 export const parseFileName = (
   fileName: string
