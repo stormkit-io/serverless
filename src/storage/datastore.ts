@@ -3,8 +3,15 @@
  */
 import axios from "axios";
 import dotenv from "dotenv";
+import fs from "node:fs";
+import path from "node:path";
 
-dotenv.config({ path: "stormkit.env" });
+for (const file of ["stormkit.env", ".env"]) {
+  if (fs.existsSync(path.join(process.cwd(), file))) {
+    dotenv.config({ path: file });
+    break;
+  }
+}
 
 interface Configuration {
   envId?: string;
@@ -14,9 +21,11 @@ interface Configuration {
 
 const conf: Configuration = {
   apiKey: process.env.SK_API_KEY,
-  envId: process.env.SK_ENV_ID,
   baseUrl: process.env.SK_DATA_STORE_URL || "https://api.stormkit.io",
 };
+
+const INVALID_API_KEY =
+  "Stormkit DataStore requires an environment-level API key. You can generate that from your Environment page.";
 
 const API_KEY_MISSING =
   "Stormkit missing API key. Go to your application > settings to generate a new key.";
@@ -65,7 +74,11 @@ const makeRequest = async <T>({
     throw new Error(API_KEY_MISSING);
   }
 
-  const res = await axios(`${url}?eid=${conf.envId}`, {
+  if (!conf.apiKey.startsWith("env")) {
+    throw new Error(INVALID_API_KEY);
+  }
+
+  const res = await axios(url, {
     baseURL: conf.baseUrl,
     method,
     headers: {
