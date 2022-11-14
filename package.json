@@ -19,7 +19,8 @@
     ".": "./serverless.js",
     "./dev-server": "./dev-server.js",
     "./router": "./router.js",
-    "./presets": "./presets.js"
+    "./presets": "./presets.js",
+    "./datastore": "./datastore.js"
   },
   "keywords": [
     "serverless",
