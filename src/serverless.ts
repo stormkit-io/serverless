@@ -3,7 +3,6 @@ import type { AwsAlbHandler } from "./handlers/aws-alb";
 import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
 import http from "http";
-export { handleApi } from "./utils";
 
 export type NodeContext = Record<string, unknown>;
 
@@ -32,14 +31,14 @@ const defaultHandler: HandlerType = (() => {
   return handlers.stormkit;
 })();
 
-export default function (
+export default (
   app: App,
   handler: HandlerType = defaultHandler
-): StormkitHandler | AwsAlbHandler {
+): StormkitHandler | AwsAlbHandler => {
   switch (handler) {
     case handlers.awsAlb:
       return awsAlbHandler(app);
     default:
       return stormkitHandler(app);
   }
-}
+};
