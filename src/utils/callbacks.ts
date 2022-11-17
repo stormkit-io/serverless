@@ -52,7 +52,8 @@ export const handleApi = (
     const file = matchPath(cachedFiles, requestPath, req.method);
 
     if (file) {
-      return require(path.join(file.path, file.name)).default(req, res);
+      const mod = require(path.join(file.path, file.name));
+      return mod.default ? mod.default(req, res) : mod(req, res);
     }
 
     res.writeHead(404, "Not found");
