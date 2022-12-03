@@ -139,16 +139,19 @@ const mapFilters = (
 
 const storage = {
   async store(
-    keyName: string,
-    keyValue: Record<string, any> | Record<string, any>[]
+    collectionName: string,
+    recordValue: Record<string, any> | Record<string, any>[]
   ): Promise<StoreResponse> {
-    const items: { keyValue: Record<string, any>; keyName: string }[] = [];
+    const items: {
+      recordValue: Record<string, any>;
+      collectionName: string;
+    }[] = [];
 
-    if (!Array.isArray(keyValue)) {
-      items.push({ keyValue, keyName });
+    if (!Array.isArray(recordValue)) {
+      items.push({ recordValue, collectionName });
     } else {
-      keyValue.forEach((kv) => {
-        items.push({ keyName, keyValue: kv });
+      recordValue.forEach((kv) => {
+        items.push({ collectionName, recordValue: kv });
       });
     }
 
@@ -162,7 +165,7 @@ const storage = {
     // Save record id
     if (response.recordIds) {
       response.recordIds.forEach((recordId, index) => {
-        items[index].keyValue.recordId = recordId;
+        items[index].recordValue.recordId = recordId;
       });
     }
 
@@ -170,14 +173,14 @@ const storage = {
   },
 
   async fetch<T>(
-    keyName: string,
+    collectionName: string,
     filters?: Record<string, Filter | Primitive>,
     options?: FetchOptions
   ): Promise<(T & { recordId: string })[]> {
     return await makeRequest<(T & { recordId: string })[]>({
       url: "/app/data-storage/query",
       body: {
-        keyName,
+        collectionName,
         filters: mapFilters(filters),
         limit: options?.limit,
       },
@@ -185,18 +188,20 @@ const storage = {
   },
 
   async fetchOne<T>(
-    keyName: string,
+    collectionName: string,
     filters?: Record<string, Filter | Primitive>
   ): Promise<T & { recordId: string }> {
-    return (await storage.fetch<T>(keyName, filters, { limit: 1 }))[0];
+    return (await storage.fetch<T>(collectionName, filters, { limit: 1 }))[0];
   },
 
-  async removeByKey(keyName: string): Promise<{ ok: boolean }> {
+  async removeByCollectionName(
+    collectionName: string
+  ): Promise<{ ok: boolean }> {
     return await makeRequest<{ ok: boolean }>({
       url: "/app/data-storage",
       method: "DELETE",
       body: {
-        keyName,
+        collectionName,
       },
     });
   },
