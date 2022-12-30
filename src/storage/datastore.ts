@@ -1,10 +1,11 @@
 /**
  * THIS FILE IS UNDER DEVELOPMENT - DO NOT USE IT IN PRODUCTION.
  */
-import axios from "axios";
 import dotenv from "dotenv";
 import fs from "node:fs";
 import path from "node:path";
+import http from "node:http";
+import https from "node:https";
 
 for (const file of ["stormkit.env", ".env"]) {
   if (fs.existsSync(path.join(process.cwd(), file))) {
@@ -65,35 +66,61 @@ interface FetchOptions {
   limit: number;
 }
 
-const makeRequest = async <T>({
+const makeRequest = <T>({
   url,
   body,
   method = "POST",
 }: MakeRequestProps): Promise<T> => {
   if (!conf.apiKey) {
-    throw new Error(API_KEY_MISSING);
+    return Promise.reject(API_KEY_MISSING);
   }
 
   if (!conf.apiKey.startsWith("env")) {
-    throw new Error(INVALID_API_KEY);
+    return Promise.reject(INVALID_API_KEY);
   }
 
-  const res = await axios(url, {
-    baseURL: conf.baseUrl,
+  const parsed = new URL(path.join(conf.baseUrl!, url));
+
+  const opts: http.RequestOptions = {
+    host: parsed.hostname,
+    port: parsed.port,
+    protocol: parsed.protocol,
+    path: url,
     method,
     headers: {
+      "Content-Type": "application/json",
       Authorization: `${conf.apiKey}`,
     },
-    data: body,
+  };
+
+  const httpAgent = opts.protocol?.startsWith("https") ? https : http;
+
+  return new Promise((resolve, reject) => {
+    const request = httpAgent.request(opts, (res) => {
+      res.setEncoding("utf8");
+
+      const data: string[] = [];
+
+      res.on("data", (chunk) => {
+        data.push(chunk);
+      });
+
+      res.on("end", () => {
+        if (res.statusCode !== 200 && res.statusCode !== 201) {
+          return reject(`Response returned ${res.statusCode}: ${data}`);
+        }
+
+        try {
+          resolve(JSON.parse(data.join("")) as T);
+        } catch {
+          reject(res);
+        }
+      });
+    });
+
+    request.write(JSON.stringify(body));
+    request.end();
   });
-
-  const data = res.data;
-
-  if (res.status !== 200 && res.status !== 201) {
-    throw new Error(`Response returned ${res.status}: ${data}`);
-  }
-
-  return data as T;
 };
 
 /**
