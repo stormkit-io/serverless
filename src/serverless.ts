@@ -1,8 +1,10 @@
 import type { StormkitHandler } from "./handlers/stormkit";
 import type { AwsAlbHandler } from "./handlers/aws-alb";
+import http from "http";
 import awsAlbHandler from "./handlers/aws-alb";
 import stormkitHandler from "./handlers/stormkit";
-import http from "http";
+export { default as Request } from "./request";
+export { default as Response } from "./response";
 
 export type NodeContext = Record<string, unknown>;
 
