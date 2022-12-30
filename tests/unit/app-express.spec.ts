@@ -50,9 +50,7 @@ describe("express", () => {
         {},
         (e: Error | null, parsed: NodeResponse) => {
           expect(e).toBe(null);
-
           expect(decodeString(parsed.buffer)).toBe("298zf09hf012fh2");
-
           expect(parsed.status).toBe(200);
           expect(parsed.statusMessage).toBe("OK");
           expect(parsed.headers).toEqual(

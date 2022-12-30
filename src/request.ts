@@ -1,4 +1,4 @@
-import type { Socket } from "net";
+import { Socket } from "net";
 import http from "http";
 import { Readable } from "stream";
 
@@ -21,8 +21,10 @@ class Request extends http.IncomingMessage {
   constructor(props: NodeRequest) {
     const socket = {
       readable: false,
+      destroyed: false,
       remoteAddress: props.remoteAddress,
       remotePort: Number(props.remotePort) || 0,
+      resume: Function.prototype,
       destroy: Function.prototype,
       end: Function.prototype,
     } as Socket;
@@ -81,7 +83,32 @@ class Request extends http.IncomingMessage {
       s.pipe(destination);
       return destination;
     };
+
+    registerEmitters(this, props);
   }
 }
+
+const registerEmitters = (obj: any, props: NodeRequest) => {
+  const originalListener = obj.on;
+
+  obj.on = (...args: any) => {
+    const event: string = args.shift();
+    const listener: (args?: any) => void = args.shift();
+
+    switch (event) {
+      case "data": {
+        return listener(props.body);
+      }
+      case "end": {
+        return listener();
+      }
+      default: {
+        if (args.length > 2) {
+          return originalListener.on(event, listener, ...args);
+        }
+      }
+    }
+  };
+};
 
 export default Request;
