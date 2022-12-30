@@ -95,19 +95,15 @@ const registerEmitters = (obj: any, props: NodeRequest) => {
     const event: string = args.shift();
     const listener: (args?: any) => void = args.shift();
 
-    switch (event) {
-      case "data": {
-        return listener(props.body);
-      }
-      case "end": {
-        return listener();
-      }
-      default: {
-        if (args.length > 2) {
-          return originalListener.on(event, listener, ...args);
-        }
-      }
+    if (event === "data") {
+      listener(props.body);
+    } else if (event === "end") {
+      listener();
+    } else if (args.length > 2) {
+      originalListener.on(event, listener, ...args);
     }
+
+    return obj;
   };
 };
 

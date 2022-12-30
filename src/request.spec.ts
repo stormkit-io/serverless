@@ -10,9 +10,13 @@ describe("request.ts", () => {
       body: "Hello world",
     });
 
-    req.on("data", (chunk) => {
-      expect(chunk).toBe("Hello world");
-      done();
-    });
+    req
+      .on("error", () => {
+        done.fail("I shouldn't be called");
+      })
+      .on("data", (chunk) => {
+        expect(chunk).toBe("Hello world");
+        done();
+      });
   });
 });
