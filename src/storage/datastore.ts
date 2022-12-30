@@ -107,7 +107,7 @@ const makeRequest = <T>({
 
       res.on("end", () => {
         if (res.statusCode !== 200 && res.statusCode !== 201) {
-          return reject(`Response returned ${res.statusCode}: ${data}`);
+          return reject(res);
         }
 
         try {
