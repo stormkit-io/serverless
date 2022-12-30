@@ -99,8 +99,8 @@ const registerEmitters = (obj: any, props: NodeRequest) => {
       listener(props.body);
     } else if (event === "end") {
       listener();
-    } else if (args.length > 2) {
-      originalListener.on(event, listener, ...args);
+    } else if (event && listener) {
+      originalListener.bind(obj, event, listener, ...args);
     }
 
     return obj;
