@@ -214,6 +214,21 @@ const storage = {
     });
   },
 
+  async fetchCount(
+    collectionName: string,
+    filters?: Record<string, Filter | Primitive>
+  ): Promise<number> {
+    return (
+      await makeRequest<{ collectionName: string; count: number }>({
+        url: "/app/data-storage/count",
+        body: {
+          collectionName,
+          filters: mapFilters(filters),
+        },
+      })
+    ).count;
+  },
+
   async fetchOne<T>(
     collectionName: string,
     filters?: Record<string, Filter | Primitive>
