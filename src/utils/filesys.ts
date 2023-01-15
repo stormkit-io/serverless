@@ -88,6 +88,10 @@ export const matchPath = (
   for (const file of files) {
     const parsed = parseFileName(file.name);
 
+    if (file.name.startsWith("_") || file.rel.startsWith("/_")) {
+      continue;
+    }
+
     // /users/[id]/index.get.js => /users/:id (if method matches)
     if (parsed.method !== "all" && parsed.method !== method) {
       continue;
