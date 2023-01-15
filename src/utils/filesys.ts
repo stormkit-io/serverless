@@ -88,7 +88,7 @@ export const matchPath = (
   for (const file of files) {
     const parsed = parseFileName(file.name);
 
-    if (file.name.startsWith("_") || file.rel.startsWith("/_")) {
+    if (file.name.startsWith("_") || file.rel.indexOf("/_") > -1) {
       continue;
     }
 
