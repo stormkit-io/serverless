@@ -27,7 +27,7 @@
     "aws",
     "lambda"
   ],
-  "author": "@stormkit-io",
+  "author": "@stormkitio",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stormkit-io/serverless/issues"
