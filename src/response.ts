@@ -4,7 +4,7 @@ import httpParse from "./http-parser";
 import Request from "./request";
 import createStream from "./stream";
 
-export interface NodeResponse {
+export interface ServerlessResponse {
   buffer?: string; // Raw http body base64 encoded
   status: number;
   statusMessage: string;

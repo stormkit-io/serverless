@@ -1,8 +1,8 @@
 import type { Express } from "express";
-import type { NodeResponse } from "../response";
-import type { NodeRequest } from "../request";
-import type { AwsCallback } from "../handlers/aws-alb";
-import type { App, NodeContext } from "../serverless";
+import type { ServerlessResponse } from "../response";
+import type { RequestEvent } from "../request";
+import type { AwsCallback, NodeContext } from "../handlers/stormkit";
+import type { App } from "../serverless";
 import type { WalkFile } from "./filesys";
 import path from "path";
 import Request from "../request";
@@ -33,9 +33,9 @@ export const handleError = (callback: AwsCallback) => (e: Error) => {
 let cachedFiles: WalkFile[];
 
 export const handleApi = (
-  event: NodeRequest,
+  event: RequestEvent,
   apiDir: string
-): Promise<NodeResponse> => {
+): Promise<ServerlessResponse> => {
   if (typeof cachedFiles === "undefined") {
     cachedFiles = walkTree(apiDir);
   }
@@ -44,7 +44,7 @@ export const handleApi = (
     const req = new Request(event);
     const res = new Response(req);
 
-    res.on("sk-end", (data: NodeResponse) => {
+    res.on("sk-end", (data: ServerlessResponse) => {
       resolve(data);
     });
 
@@ -63,9 +63,9 @@ export const handleApi = (
 
 export const handleSuccess = (
   app: App,
-  event: NodeRequest,
+  event: RequestEvent,
   context: NodeContext
-): Promise<NodeResponse> => {
+): Promise<ServerlessResponse> => {
   // Add support for express apps
   if (app.hasOwnProperty("handle")) {
     // @ts-ignore
@@ -76,7 +76,7 @@ export const handleSuccess = (
     const req = new Request(event);
     const res = new Response(req);
 
-    res.on("sk-end", (data: NodeResponse) => {
+    res.on("sk-end", (data: ServerlessResponse) => {
       resolve(data);
     });
 

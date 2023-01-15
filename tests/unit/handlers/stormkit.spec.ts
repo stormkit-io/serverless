@@ -1,15 +1,15 @@
-import type { NodeRequest } from "~/request";
-import type { NodeResponse } from "~/response";
+import type { RequestEvent } from "~/request";
+import type { ServerlessResponse } from "~/response";
 import handler from "~/handlers/stormkit";
 import Request from "~/request";
 import Response from "~/response";
-import { mockNodeRequest, mockMainJs, decodeString } from "../../helpers";
+import { mockRequestEvent, mockMainJs, decodeString } from "../../helpers";
 
 describe("handlers/stormkit.ts", () => {
-  let request: NodeRequest;
+  let request: RequestEvent;
 
   beforeEach(() => {
-    request = mockNodeRequest();
+    request = mockRequestEvent();
   });
 
   test("request should receive correct properties", (done) => {
@@ -22,7 +22,7 @@ describe("handlers/stormkit.ts", () => {
           address: `${res.socket?.remoteAddress}:${res.socket?.remotePort}`,
         })
       );
-    })(request, {}, (e: Error | null, parsed: NodeResponse) => {
+    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
       expect(e).toBe(null);
       expect(parsed.status).toBe(200);
       expect(parsed.statusMessage).toBe("OK");
@@ -52,7 +52,7 @@ describe("handlers/stormkit.ts", () => {
     await handler((_: Request, res: Response) => {
       res.writeHead(200, "Status OK");
       res.end();
-    })(request, {}, (e: Error | null, parsed: NodeResponse) => {
+    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
       expect(e).toBe(null);
       expect(parsed).toEqual(
         expect.objectContaining({
@@ -74,7 +74,7 @@ describe("handlers/stormkit.ts", () => {
       res.setHeader("connection", "keep-alive");
       res.writeHead(200, "Status OK");
       res.end();
-    })(request, {}, (e: Error | null, parsed: NodeResponse) => {
+    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
       expect(e).toBe(null);
       expect(parsed).toEqual(
         expect.objectContaining({
@@ -97,7 +97,7 @@ describe("handlers/stormkit.ts", () => {
       res.write("Written a text\r\n\r\n");
       res.write("Write something else");
       res.end("my-data");
-    })(request, {}, (e: Error | null, parsed: NodeResponse) => {
+    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
       expect(e).toBe(null);
       expect(parsed).toEqual(
         expect.objectContaining({
@@ -121,7 +121,7 @@ describe("handlers/stormkit.ts", () => {
       res.write("Written a text\r\n\r\n");
       res.write("Write something else");
       res.end("my-data");
-    })(request, {}, (e: Error | null, parsed: NodeResponse) => {
+    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
       expect(e).toBe(null);
       expect(decodeString(parsed.buffer)).toEqual(
         "Written a text\r\n\r\nWrite something elsemy-data"
@@ -147,7 +147,7 @@ describe("handlers/stormkit.ts", () => {
   test("should handle large responses", (done) => {
     handler((_: Request, res: Response) => {
       res.end(mockJsFile);
-    })(request, {}, (e: Error | null, parsed: NodeResponse) => {
+    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
       expect(e).toBe(null);
       expect(decodeString(parsed.buffer)).toBe(mockJsFile);
       done();

@@ -1,5 +1,5 @@
-import type { NodeRequest } from "~/request";
-import type { NodeResponse } from "~/response";
+import type { RequestEvent } from "~/request";
+import type { ServerlessResponse } from "~/response";
 import zlib from "zlib";
 import http from "http";
 import path from "path";
@@ -11,14 +11,14 @@ import fileUpload from "express-fileupload";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import renderer from "~/handlers/stormkit";
 import {
-  mockNodeRequest,
+  mockRequestEvent,
   mockUploadData,
   mockMainJs,
   decodeString,
 } from "../helpers";
 
 describe("express", () => {
-  let request: NodeRequest;
+  let request: RequestEvent;
   let app: Express;
 
   describe("basic", () => {
@@ -31,7 +31,7 @@ describe("express", () => {
       app.use(fileUpload());
       app.disable("x-powered-by");
 
-      request = mockNodeRequest();
+      request = mockRequestEvent();
       request.headers["cookie"] =
         "PHPSESSID=298zf09hf012fh2; csrftoken=u32t4o3tb3gg43; _gat=1";
 
@@ -48,7 +48,7 @@ describe("express", () => {
       await renderer(app)(
         request,
         {},
-        (e: Error | null, parsed: NodeResponse) => {
+        (e: Error | null, parsed: ServerlessResponse) => {
           expect(e).toBe(null);
           expect(decodeString(parsed.buffer)).toBe("298zf09hf012fh2");
           expect(parsed.status).toBe(200);
@@ -70,7 +70,7 @@ describe("express", () => {
       await renderer(app)(
         request,
         {},
-        (e: Error | null, parsed: NodeResponse) => {
+        (e: Error | null, parsed: ServerlessResponse) => {
           expect(e).toBe(null);
 
           expect(decodeString(parsed.buffer)).toBe(
@@ -98,7 +98,7 @@ describe("express", () => {
         await renderer(app)(
           request,
           {},
-          (e: Error | null, parsed: NodeResponse) => {
+          (e: Error | null, parsed: ServerlessResponse) => {
             expect(e).toBe(null);
             expect(decodeString(parsed.buffer)).toBe(mockJsFile);
           }
@@ -116,7 +116,7 @@ describe("express", () => {
       app.use(fileUpload());
       app.disable("x-powered-by");
 
-      request = mockNodeRequest();
+      request = mockRequestEvent();
       request.headers["cookie"] =
         "PHPSESSID=298zf09hf012fh2; csrftoken=u32t4o3tb3gg43; _gat=1";
 
@@ -145,7 +145,7 @@ describe("express", () => {
         await renderer(app)(
           request,
           {},
-          (e: Error | null, parsed: NodeResponse) => {
+          (e: Error | null, parsed: ServerlessResponse) => {
             expect(e).toBe(null);
             expect(parsed.headers).toEqual({
               "content-type": "application/json; charset=utf-8",
@@ -172,7 +172,7 @@ describe("express", () => {
       app = express();
       app.use(compression({ level: 1, filter: () => true }));
       app.disable("x-powered-by");
-      request = mockNodeRequest();
+      request = mockRequestEvent();
 
       app.get("*", (_: express.Request, res: express.Response) => {
         res.send(mockData);
@@ -182,25 +182,29 @@ describe("express", () => {
     test("should compress response", (done) => {
       request.headers["Accept-Encoding"] = "gzip, compress, br";
 
-      renderer(app)(request, {}, (e: Error | null, parsed: NodeResponse) => {
-        expect(e).toBe(null);
-        expect(parsed.headers).toEqual(
-          expect.objectContaining({
-            "content-type": "text/html; charset=utf-8",
-            "content-encoding": "gzip",
-            connection: "close",
-            vary: "Accept-Encoding",
-          })
-        );
+      renderer(app)(
+        request,
+        {},
+        (e: Error | null, parsed: ServerlessResponse) => {
+          expect(e).toBe(null);
+          expect(parsed.headers).toEqual(
+            expect.objectContaining({
+              "content-type": "text/html; charset=utf-8",
+              "content-encoding": "gzip",
+              connection: "close",
+              vary: "Accept-Encoding",
+            })
+          );
 
-        expect(
-          zlib
-            .gunzipSync(Buffer.from(parsed.buffer || "", "base64"))
-            .toString("utf-8")
-        ).toBe(mockData);
+          expect(
+            zlib
+              .gunzipSync(Buffer.from(parsed.buffer || "", "base64"))
+              .toString("utf-8")
+          ).toBe(mockData);
 
-        done();
-      });
+          done();
+        }
+      );
     });
   });
 
@@ -209,7 +213,7 @@ describe("express", () => {
     let server: http.Server;
 
     beforeEach(() => {
-      request = mockNodeRequest();
+      request = mockRequestEvent();
 
       app = express();
       app.disable("x-powered-by");
@@ -258,7 +262,7 @@ describe("express", () => {
       await renderer(app)(
         request,
         {},
-        (e: Error | null, parsed: NodeResponse) => {
+        (e: Error | null, parsed: ServerlessResponse) => {
           expect(e).toBe(null);
           expect(parsed.headers["x-custom-proxy-header"]).toBe("1");
           expect(JSON.parse(decodeString(parsed.buffer))).toEqual({

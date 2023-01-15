@@ -1,7 +1,6 @@
-import type { NodeRequest } from "~/request";
-import type { ALBRequest } from "~/handlers/aws-alb";
+import type { RequestEvent } from "~/request";
 
-export const mockNodeRequest = (): NodeRequest => ({
+export const mockRequestEvent = (): RequestEvent => ({
   method: "GET",
   headers: {
     "X-Custom-Header": "my-header",
@@ -12,18 +11,4 @@ export const mockNodeRequest = (): NodeRequest => ({
   body: "",
   remotePort: "5411",
   remoteAddress: "192.168.1.1",
-});
-
-export const mockALBRequest = (): ALBRequest => ({
-  httpMethod: "GET",
-  headers: {
-    "X-Custom-Header": "my-header",
-    Host: "127.0.0.1",
-  },
-  path: "/my-awesome-url",
-  body: "",
-  queryStringParameters: {
-    "some-param": "1",
-  },
-  isBase64Encoded: false,
 });

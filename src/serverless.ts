@@ -1,12 +1,9 @@
-import type { StormkitHandler } from "./handlers/stormkit";
-import type { AwsAlbHandler } from "./handlers/aws-alb";
-import http from "http";
-import awsAlbHandler from "./handlers/aws-alb";
+import type { StormkitHandler, NodeContext } from "./handlers/stormkit";
+import http from "node:http";
 import stormkitHandler from "./handlers/stormkit";
-export { default as Request } from "./request";
-export { default as Response } from "./response";
-
-export type NodeContext = Record<string, unknown>;
+import { handleApi } from "./utils/callbacks";
+export { RequestEvent } from "./request";
+export { ServerlessResponse } from "./response";
 
 export type App = (
   req: http.IncomingMessage,
@@ -14,33 +11,22 @@ export type App = (
   context?: NodeContext
 ) => void;
 
-type HandlerType = "awsAlb" | "stormkit";
-
-const handlers: Record<string, HandlerType> = {
-  awsAlb: "awsAlb",
-  stormkit: "stormkit",
-};
-
-const defaultHandler: HandlerType = (() => {
-  const handler = process.env.SERVERLESS_HANDLER;
-
-  for (const val of Object.values(handlers)) {
-    if (val === handler) {
-      return val;
-    }
-  }
-
-  return handlers.stormkit;
-})();
+type HandlerType = "stormkit" | "stormkit:api";
+const handlers: HandlerType[] = ["stormkit", "stormkit:api"];
 
 export default (
-  app: App,
-  handler: HandlerType = defaultHandler
-): StormkitHandler | AwsAlbHandler => {
+  app?: App,
+  handler: HandlerType = "stormkit"
+): StormkitHandler | typeof handleApi => {
   switch (handler) {
-    case handlers.awsAlb:
-      return awsAlbHandler(app);
+    case "stormkit:api":
+      return handleApi;
+
     default:
+      if (!app) {
+        throw new Error("Stormkit handler requires app to be defined");
+      }
+
       return stormkitHandler(app);
   }
 };

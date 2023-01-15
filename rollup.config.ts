@@ -8,8 +8,6 @@ const inputs = {
   serverless: "./src/serverless.ts",
   presets: "./src/presets/presets.ts",
   router: "./src/router.ts",
-  datastore: "./src/storage/datastore.ts",
-  "dev-server": "./src/dev-server/dev-server.ts",
   "entries/nuxt-v2": "./src/entries/nuxt/server-v2.ts",
   "entries/next": "./src/entries/next/server.ts",
   "entries/default": "./src/entries/default/server.ts",
@@ -32,8 +30,6 @@ export default [
       serverless: "./dist/types/src/serverless.d.ts",
       presets: "./dist/types/src/presets/presets.d.ts",
       router: "./dist/types/src/router.d.ts",
-      datastore: "./dist/types/src/storage/datastore.d.ts",
-      "dev-server": "./dist/types/src/dev-server/dev-server.d.ts",
     },
     output: {
       dir: "dist",

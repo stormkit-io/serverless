@@ -1,10 +1,9 @@
-import type { NodeRequest } from "../../request";
-import type { AwsCallback } from "../../handlers/aws-alb";
-import type { NodeContext } from "../../serverless";
+import type { RequestEvent } from "../../request";
+import type { AwsCallback, NodeContext } from "../../handlers/stormkit";
 import { handleApi, handleError } from "../../utils";
 
 export const handler = async (
-  event: NodeRequest,
+  event: RequestEvent,
   context: NodeContext,
   callback: AwsCallback
 ) => {

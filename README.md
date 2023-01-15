@@ -2,18 +2,11 @@
 <p align="center">Export node.js applications into serverless compatible functions</p>
 <hr />
 
-Stormkit servesless provides handy wrappers to make your code work in serverless environments. 
-This makes your function much more portable. The wrapper will take the incoming `event` and transform
-it into a Node.js `http.IncomingMessage` object.
+Stormkit servesless is a low-level repository to make your code work in serverless environments. 
 
 ## For whom is this package targeted for? 
 
-This repository is intended for users who care about portability. If you know you'll be using AWS Lambda and 
-you don't need to make your code portable, then this package may be overengineering for your needs. If, 
-however, you'd like to deploy your application to multiple providers, then this package can be helpful.
-
-If you are using [Stormkit](https://www.stormkit.io) and developing an API, you can use this repository to test
-your application locally.
+This repository is used internally by [Stormkit](https://www.stormkit.io). It adds serverless compatibility to applications hosted on Stormkit.
 
 ## Installation
 
@@ -35,8 +28,7 @@ export const handler = serverless(
 );
 ```
 
-By default the above example will use a Stormkit handler. To change this behaviour you can tell
-the `serverless` function which handler to use.
+By default the above example will use a Stormkit handler for SSR. To use a different handler specify the secondary argument:
 
 ```js
 export const handler = serverless(
@@ -44,64 +36,9 @@ export const handler = serverless(
     res.write("Hello from " + req.url);
     res.end();
   },
-  "awsAlb"
+  "stormkit:api"
 );
 ```
-
-To avoid setting the handler type all the time, you can also use the `process.env.SERVERLESS_HANDLER`
-environment variable to set a different default type. Allowed types are:
-
-- `awsAlb`
-- `stormkit`
-
-If you need a different handler, feel free to [open a issue](https://github.com/stormkit-io/serverless/issues) 🙏🏻
-
-## Currently supported signatures
-
-Each provider has it's own signature to call a serverless function. Here's the list of the currently
-supported providers:
-
-- [Stormkit](https://www.stormkit.io)
-- [AWS ALB](https://docs.aws.amazon.com/lambda/latest/dg/services-alb.html)
-
-## Dev Server
-
-To test your serverless application locally, execute the following command:
-
-```bash
-node ./node_modules/@stormkit/serverless/dev-server
-```
-
-This will spin up a local dev server and start serving requests from your `/api` folder. The Dev Server
-uses a filesystem routing mechanism, therefore each request will be forwarded to the relevant file. For example:
-
-`/user/subscriptions` will be routed to `$REPO/api/user/subscriptions.ts` or `$REPO/api/user/subscriptions.js` where `$REPO` is path to your repository. For dynamic paths, you can prefix your subfolders with a double-colon `:`. For instance, if your folder structure is `$REPO/api/user/:id/subscriptions.ts`, a request with path `/user/15/subscriptions` will be matched and served from that file.
-
-If you see a `SyntaxError: unexpected token 'export'` error try adding the following configuration
-to the `tsconfig.json` file:
-
-```json
-{
-  "compilerOptions": {
-    "module": "commonjs"
-  }
-}
-```
-
-## Testing this repo locally
-
-To run an e2e test locally, use the `tests/e2e/run.ts` file:
-
-```bash
-ts-node tests/e2e/run.ts --repo <path-to-repo> --dist-dir <path-to-dist>
-```
-
-|argument|description|
-|--------|-----------|
-|repo    | Required. Absolute path to the repository to test against. |
-|dist-dir| Optional. If the tested repository is not a framework, provide the dist dir. |
-
-Make sure that the repo that is tested is built.
 
 ## License 
 

@@ -2,7 +2,7 @@ import { Socket } from "net";
 import http from "http";
 import { Readable } from "stream";
 
-export interface NodeRequest {
+export interface RequestEvent {
   url: string; // /relative/path?query=value#hash
   path: string; // /relative/path
   body: string;
@@ -18,7 +18,7 @@ export interface NodeRequest {
 }
 
 class Request extends http.IncomingMessage {
-  constructor(props: NodeRequest) {
+  constructor(props: RequestEvent) {
     const socket = {
       readable: false,
       destroyed: false,
@@ -88,7 +88,7 @@ class Request extends http.IncomingMessage {
   }
 }
 
-const registerEmitters = (obj: any, props: NodeRequest) => {
+const registerEmitters = (obj: any, props: RequestEvent) => {
   const originalListener = obj.on;
 
   obj.on = (...args: any) => {
