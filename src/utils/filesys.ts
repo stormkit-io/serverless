@@ -99,7 +99,7 @@ export const matchPath = (
 
     const route = fileToRoute(file.rel);
 
-    if (match(route, requestPath).matches) {
+    if (match(route.replace(/\\/g, '/'), requestPath).matches) {
       return file;
     }
   }
