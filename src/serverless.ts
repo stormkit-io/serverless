@@ -12,12 +12,16 @@ export type App = (
 ) => void;
 
 type HandlerType = "stormkit" | "stormkit:api";
-const handlers: HandlerType[] = ["stormkit", "stormkit:api"];
+
+type ReturnTypes = {
+  stormkit: StormkitHandler;
+  "stormkit:api": typeof handleApi;
+};
 
 export default (
   app?: App,
   handler: HandlerType = "stormkit"
-): StormkitHandler | typeof handleApi => {
+): ReturnTypes[typeof handler] => {
   switch (handler) {
     case "stormkit:api":
       return handleApi;
