@@ -11,8 +11,6 @@ export type App = (
   context?: NodeContext
 ) => void;
 
-type HandlerType = "stormkit" | "stormkit:api";
-
 type ReturnTypes = {
   stormkit: StormkitHandler;
   "stormkit:api": typeof handleApi;
@@ -20,8 +18,8 @@ type ReturnTypes = {
 
 export default (
   app?: App,
-  handler: HandlerType = "stormkit"
-): ReturnTypes[typeof handler] => {
+  handler?: keyof ReturnTypes
+): ReturnTypes[keyof ReturnTypes] => {
   switch (handler) {
     case "stormkit:api":
       return handleApi;
