@@ -58,7 +58,7 @@ export const handleApi = (
         const mod = require(importPath);
         return mod.default ? mod.default(req, res) : mod(req, res);
       } catch {
-        import(importPath).then((mod) => {
+        return import(importPath).then((mod) => {
           return mod.default ? mod.default(req, res) : mod(req, res);
         });
       }
