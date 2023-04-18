@@ -52,15 +52,11 @@ export const handleApi = (
     const file = matchPath(cachedFiles, requestPath, req.method);
 
     if (file) {
-      const importPath = path.join(file.path, file.name);
-
       try {
-        const mod = require(importPath);
+        const mod = require(path.join(file.path, file.name));
         return mod.default ? mod.default(req, res) : mod(req, res);
-      } catch {
-        return import(importPath).then((mod) => {
-          return mod.default ? mod.default(req, res) : mod(req, res);
-        });
+      } catch (e) {
+        console.error(e);
       }
     }
 
