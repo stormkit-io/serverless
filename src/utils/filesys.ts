@@ -47,6 +47,7 @@ export type Method =
   | "put"
   | "delete"
   | "head"
+  | "options"
   | "all";
 
 export const parseFileName = (
