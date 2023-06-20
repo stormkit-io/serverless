@@ -93,6 +93,10 @@ export const matchPath = (
       continue;
     }
 
+    if (file.name.includes(".spec.")) {
+      continue;
+    }
+
     // /users/[id]/index.get.js => /users/:id (if method matches)
     if (parsed.method !== "all" && parsed.method !== method) {
       continue;
