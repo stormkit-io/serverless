@@ -1,4 +1,10 @@
-import type { PackageJson } from "../presets/presets";
+interface PackageJson {
+  version: string;
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  bundleDepedencies?: string[];
+  bundledDependencies?: string[];
+}
 
 export const getDependency = (
   pck: PackageJson,
