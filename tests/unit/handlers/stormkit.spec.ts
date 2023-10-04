@@ -126,7 +126,7 @@ describe("handlers/stormkit.ts", () => {
       expect(decodeString(parsed.buffer)).toEqual(
         "Written a text\r\n\r\nWrite something elsemy-data"
       );
-      expect(parsed.headers["transfer-encoding"]).toBeUndefined();
+      expect(parsed.headers?.["transfer-encoding"]).toBeUndefined();
       expect(parsed).toEqual(
         expect.objectContaining({
           status: 200,

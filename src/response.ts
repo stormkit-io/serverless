@@ -6,9 +6,10 @@ import createStream from "./stream";
 
 export interface ServerlessResponse {
   buffer?: string; // Raw http body base64 encoded
-  status: number;
-  statusMessage: string;
-  headers: Record<string, string | string[]>;
+  body?: string; // Response body returned as string. Either this or `buffer` is used.
+  status?: number;
+  statusMessage?: string;
+  headers?: Record<string, string | string[]>;
 }
 
 class Response extends ServerResponse {

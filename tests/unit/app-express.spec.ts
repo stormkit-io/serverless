@@ -264,7 +264,7 @@ describe("express", () => {
         {},
         (e: Error | null, parsed: ServerlessResponse) => {
           expect(e).toBe(null);
-          expect(parsed.headers["x-custom-proxy-header"]).toBe("1");
+          expect(parsed.headers?.["x-custom-proxy-header"]).toBe("1");
           expect(JSON.parse(decodeString(parsed.buffer))).toEqual({
             user: "robin",
             email: "robin@stormkit.io",

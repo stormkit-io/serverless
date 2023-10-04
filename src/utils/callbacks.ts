@@ -32,6 +32,13 @@ export const handleError = (callback: AwsCallback) => (e: Error) => {
 
 let cachedFiles: WalkFile[];
 
+interface AlternativeSyntax {
+  body?: string;
+  headers?: Record<string, string>;
+  statusCode?: number;
+  status?: number; // Alias for statusCode
+}
+
 export const handleApi = (
   event: RequestEvent,
   apiDir: string
@@ -54,7 +61,20 @@ export const handleApi = (
     if (file) {
       try {
         const mod = require(path.join(file.path, file.name));
-        return mod.default ? mod.default(req, res) : mod(req, res);
+        const ret = mod.default ? mod.default(req, res) : mod(req, res);
+
+        // Allow function to return a value instead of using `response.end`
+        Promise.resolve(ret).then((r: AlternativeSyntax) => {
+          if (typeof r !== "undefined" && typeof r === "object") {
+            resolve({
+              body: r.body,
+              headers: r.headers,
+              status: r.statusCode || r.status,
+            });
+          }
+        });
+
+        return;
       } catch (e) {
         console.error(e);
       }
