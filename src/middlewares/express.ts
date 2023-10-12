@@ -1,6 +1,6 @@
-import type { Request, Response, Handler } from "express";
-import type { AlternativeSyntax } from "~/utils/callbacks";
+import type { Request, Response } from "express";
 import path from "node:path";
+import { invokeApiHandler } from "~/utils/callbacks";
 import { matchPath } from "~/router";
 
 interface Options {
@@ -34,29 +34,20 @@ export default (opts: Options) => async (req: Request, res: Response) => {
       `/${path.join(apiDir, route).replace(/^\/+/, "")}`
     );
 
-    Promise.resolve(handler.default(req, res, () => {})).then(
-      (r: AlternativeSyntax | void) => {
-        if (typeof r !== "undefined" && typeof r === "object") {
-          const isBodyAnObject = typeof r.body === "object";
-
-          if (isBodyAnObject) {
-            res.setHeader("Content-Type", "application/json");
-          }
-
-          Object.keys(r.headers || {}).forEach((key) => {
-            res.setHeader(key, r.headers![key]);
-          });
-
-          res.status(r.status || r.statusCode || 200);
-
-          if (isBodyAnObject) {
-            res.send(JSON.stringify(r.body));
-          } else {
-            res.send(r.body);
-          }
-        }
+    invokeApiHandler(handler, req, res).then((data) => {
+      if (!data) {
+        res.status(200);
+        res.end();
+        return;
       }
-    );
+
+      Object.keys(data.headers || {}).forEach((key) => {
+        res.setHeader(key, data.headers![key]);
+      });
+
+      res.status(data.status || 200);
+      res.send(data.body);
+    });
 
     return;
   }

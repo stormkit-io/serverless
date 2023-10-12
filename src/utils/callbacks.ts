@@ -34,10 +34,36 @@ let cachedFiles: WalkFile[];
 
 export interface AlternativeSyntax {
   body?: string;
-  headers?: Record<string, string>;
+  headers?: Record<string, string | string[]>;
   statusCode?: number;
   status?: number; // Alias for statusCode
 }
+
+export const invokeApiHandler = (
+  handler: any,
+  req: any,
+  res: any
+): Promise<ServerlessResponse | void> => {
+  const ret = handler?.default ? handler.default(req, res) : handler(req, res);
+
+  // Allow function to return a value instead of using `response.end`
+  return Promise.resolve(ret).then((r: AlternativeSyntax) => {
+    if (typeof r !== "undefined" && typeof r === "object") {
+      const isBodyAnObject = typeof r.body === "object";
+      const headers: Record<string, string | string[]> = {};
+
+      if (isBodyAnObject) {
+        headers["Content-Type"] = "application/json";
+      }
+
+      return {
+        body: typeof r.body === "string" ? r.body : JSON.stringify(r.body),
+        headers: { ...headers, ...r.headers },
+        status: r.statusCode || r.status,
+      };
+    }
+  });
+};
 
 export const handleApi = (
   event: RequestEvent,
@@ -47,7 +73,7 @@ export const handleApi = (
     cachedFiles = walkTree(apiDir);
   }
 
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     const req = new Request(event);
     const res = new Response(req);
 
@@ -61,18 +87,11 @@ export const handleApi = (
     if (file) {
       try {
         const mod = require(path.join(file.path, file.name));
-        const ret = mod.default ? mod.default(req, res) : mod(req, res);
+        const ret = await invokeApiHandler(mod, req, res);
 
-        // Allow function to return a value instead of using `response.end`
-        Promise.resolve(ret).then((r: AlternativeSyntax) => {
-          if (typeof r !== "undefined" && typeof r === "object") {
-            resolve({
-              body: r.body,
-              headers: r.headers,
-              status: r.statusCode || r.status,
-            });
-          }
-        });
+        if (ret) {
+          resolve(ret);
+        }
 
         return;
       } catch (e) {
