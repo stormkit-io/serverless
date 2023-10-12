@@ -32,7 +32,7 @@ export const handleError = (callback: AwsCallback) => (e: Error) => {
 
 let cachedFiles: WalkFile[];
 
-interface AlternativeSyntax {
+export interface AlternativeSyntax {
   body?: string;
   headers?: Record<string, string>;
   statusCode?: number;
