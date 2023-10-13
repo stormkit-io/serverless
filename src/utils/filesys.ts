@@ -67,7 +67,7 @@ export const parseFileName = (
 
 // /users/[id]/index.js => /users/:id
 export const fileToRoute = (file: string): string => {
-  const fileName = file.split("/").pop()?.split(".")[0];
+  const fileName = file.split(path.sep).pop()?.split(".")[0];
   let normalized = file.replace(/\[([a-zA-Z0-9_\.:-]*)\]/g, ":$1");
 
   if (fileName === "index") {
@@ -76,7 +76,7 @@ export const fileToRoute = (file: string): string => {
     normalized = normalized.split(".")[0];
   }
 
-  return path.join("/", normalized);
+  return path.join(path.sep, normalized);
 };
 
 export const matchPath = (
@@ -89,7 +89,7 @@ export const matchPath = (
   for (const file of files) {
     const parsed = parseFileName(file.name);
 
-    if (file.name.startsWith("_") || file.rel.indexOf("/_") > -1) {
+    if (file.name.startsWith("_") || file.rel.indexOf(`${path.sep}_`) > -1) {
       continue;
     }
 
