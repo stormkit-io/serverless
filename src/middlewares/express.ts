@@ -30,9 +30,7 @@ export default (opts: Options) => async (req: Request, res: Response) => {
   }
 
   if (opts.moduleLoader) {
-    const handler = await opts.moduleLoader(
-      `/${path.join(apiDir, route).replace(/^\/+/, "")}`
-    );
+    const handler = await opts.moduleLoader(path.join(apiDir, route));
 
     invokeApiHandler(handler, req, res).then((data) => {
       if (!data) {
