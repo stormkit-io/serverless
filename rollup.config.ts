@@ -32,6 +32,7 @@ export default [
       router: "./dist/types/router.d.ts",
       serverless: "./dist/types/serverless.d.ts",
       middlewares: "./dist/types/middlewares/index.d.ts",
+      "middlewares/express": "./dist/types/middlewares/express.d.ts",
       aws: "./dist/types/handlers/aws.d.ts",
       gcp: "./dist/types/handlers/gcp.d.ts",
     },
