@@ -16,8 +16,10 @@
   },
   "exports": {
     ".": "./serverless.js",
-    "./router": "./router.js",
-    "./middlewares": "./middlewares.js"
+    "./aws": "./aws.js",
+    "./gcp": "./gcp.js",
+    "./middlewares": "./middlewares.js",
+    "./middlewares/express": "./middlewares/express.js"
   },
   "keywords": [
     "serverless",
