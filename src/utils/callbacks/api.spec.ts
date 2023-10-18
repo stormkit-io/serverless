@@ -1,7 +1,7 @@
 import * as http from "node:http";
-import { handleApi } from "./callbacks";
+import { handleApi } from "./api";
 
-jest.mock("./filesys", () => ({
+jest.mock("~/utils/filesys", () => ({
   walkTree: () => {
     return [];
   },
@@ -10,7 +10,7 @@ jest.mock("./filesys", () => ({
   },
 }));
 
-describe("utils/callback.ts", () => {
+describe("utils/callback/api.ts", () => {
   describe("handleApi", () => {
     const exampleRequest = {
       method: "GET",

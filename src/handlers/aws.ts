@@ -1,18 +1,23 @@
-import type { App } from "../serverless";
+import http from "node:http";
 import type { RequestEvent } from "../request";
-import { handleSuccess, handleError } from "../utils";
+import { handleSuccess } from "../utils/callbacks/success";
+import { handleError } from "../utils/callbacks/error";
 
-export type AwsCallback = (e: Error | null, data: any) => void;
+type AwsCallback = (e: Error | null, data: any) => void;
 
-export type NodeContext = Record<string, unknown>;
-
-export type StormkitHandler = (
+type AWSHandler = (
   request: RequestEvent,
-  context: NodeContext,
+  context: Record<string, any>,
   callback: AwsCallback
 ) => Promise<void>;
 
-export default (app: App): StormkitHandler =>
+type App = (
+  req: http.IncomingMessage,
+  res: http.ServerResponse,
+  context?: Record<string, any>
+) => void;
+
+export default (app: App): AWSHandler =>
   async (event, context, callback) => {
     // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
     context.callbackWaitsForEmptyEventLoop = false;

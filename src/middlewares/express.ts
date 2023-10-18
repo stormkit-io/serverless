@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import path from "node:path";
-import { invokeApiHandler } from "~/utils/callbacks";
+import { invokeApiHandler } from "~/utils/callbacks/api";
 import { matchPath } from "~/router";
 
 interface Options {

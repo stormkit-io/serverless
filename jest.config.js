@@ -1,6 +1,6 @@
 module.exports = {
   verbose: false,
-  roots: ["tests/unit/", "src"],
+  roots: ["src"],
   moduleNameMapper: {
     "~(.*)$": "<rootDir>/src/$1",
   },

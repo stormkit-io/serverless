@@ -1,11 +1,11 @@
 import type { RequestEvent } from "~/request";
 import type { ServerlessResponse } from "~/response";
-import handler from "~/handlers/stormkit";
+import handler from "~/handlers/aws";
 import Request from "~/request";
 import Response from "~/response";
-import { mockRequestEvent, mockMainJs, decodeString } from "../../helpers";
+import { mockRequestEvent, mockMainJs, decodeString } from "~/utils/testing";
 
-describe("handlers/stormkit.ts", () => {
+describe("handlers/aws.ts", () => {
   let request: RequestEvent;
 
   beforeEach(() => {

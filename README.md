@@ -28,16 +28,47 @@ export const handler = serverless(
 );
 ```
 
-By default the above example will use a Stormkit handler for SSR. To use a different handler specify the secondary argument:
+If you know beforehand the platform that is going to be deployed, you can import directly
+the relevant handler:
 
 ```js
+import serverless from "@stormkit/serverless/aws";
+
 export const handler = serverless(
   async (req: http.IncomingMessage, res: http.ServerResponse) => {
     res.write("Hello from " + req.url);
     res.end();
   },
-  "stormkit:api"
 );
+```
+
+## API Functions
+
+If you're using [API functions](https://www.stormkit.io/docs/features/writing-api), and would like to
+deploy to a custom environment you can use our middlewares:
+
+```js
+import api from "@stormkit/serverless/middlewares/express";
+import express from "express";
+import vite from "vite";
+
+// Create Vite server in middleware mode and configure the app type as
+// 'custom', disabling Vite's own HTML serving logic so parent server
+// can take control
+const vite = await createViteServer({
+  server: { middlewareMode: true },
+  appType: "custom",
+});
+
+// use vite's connect instance as middleware
+// if you use your own express router (express.Router()), you should use router.use
+app.use(vite.middlewares);
+
+// Add support for a local environment API.
+app.all(["/api", "/api/*"], apiMiddleware({
+  apiDir: "src/api",
+  moduleLoader: vite.ssrLoadModule
+}));
 ```
 
 ## License 

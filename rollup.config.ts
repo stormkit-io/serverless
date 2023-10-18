@@ -9,6 +9,9 @@ const inputs = {
   router: "./src/router.ts",
   serverless: "./src/serverless.ts",
   middlewares: "./src/middlewares/index.ts",
+  "middlewares/express": "./src/middlewares/express.ts",
+  aws: "./src/handlers/aws.ts",
+  gcp: "./src/handlers/gcp.ts",
 };
 
 export default [
@@ -26,9 +29,11 @@ export default [
   ),
   {
     input: {
-      router: "./dist/types/src/router.d.ts",
-      serverless: "./dist/types/src/serverless.d.ts",
-      middlewares: "./dist/types/src/middlewares/index.d.ts",
+      router: "./dist/types/router.d.ts",
+      serverless: "./dist/types/serverless.d.ts",
+      middlewares: "./dist/types/middlewares/index.d.ts",
+      aws: "./dist/types/handlers/aws.d.ts",
+      gcp: "./dist/types/handlers/gcp.d.ts",
     },
     output: {
       dir: "dist",

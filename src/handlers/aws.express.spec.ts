@@ -9,15 +9,15 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import renderer from "~/handlers/stormkit";
+import renderer from "~/handlers/aws";
 import {
   mockRequestEvent,
   mockUploadData,
   mockMainJs,
   decodeString,
-} from "../helpers";
+} from "~/utils/testing";
 
-describe("express", () => {
+describe("handlers/aws.express.ts", () => {
   let request: RequestEvent;
   let app: Express;
 
@@ -26,7 +26,11 @@ describe("express", () => {
 
     beforeEach(() => {
       app = express();
-      app.use(express.static(path.join(__dirname, "../helpers/mockdata")));
+
+      app.use(
+        express.static(path.join(__dirname, "../utils/testing/mockdata"))
+      );
+
       app.use(cookieParser());
       app.use(fileUpload());
       app.disable("x-powered-by");
