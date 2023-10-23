@@ -3,7 +3,7 @@ import type { RequestEvent } from "../request";
 import { handleSuccess } from "../utils/callbacks/success";
 import { handleError } from "../utils/callbacks/error";
 
-type AwsCallback = (e: Error | null, data: any) => void;
+export type AwsCallback = (e: Error | null, data: any) => void;
 
 type AWSHandler = (
   request: RequestEvent,
