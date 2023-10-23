@@ -19,7 +19,7 @@ export default [
   ...Object.keys(inputs).map((key) =>
     defineConfig({
       input: { [key]: inputs[key] },
-      external: ["vite"],
+      external: ["vite", "@google-cloud/functions-framework"],
       output: {
         dir: "dist",
         format: "cjs",

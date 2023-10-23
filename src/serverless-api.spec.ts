@@ -51,16 +51,18 @@ describe("serverless-api.ts", () => {
 
   describe("gcp", () => {
     beforeEach(() => {
-      process.env.GOOGLE_FUNCTION_TARGET = "http";
+      process.env.FUNCTION_SIGNATURE_TYPE = "cloudevent";
+      process.env.FUNCTION_TARGET = "myTarget";
     });
 
     afterEach(() => {
-      delete process.env.GOOGLE_FUNCTION_TARGET;
+      delete process.env.FUNCTION_SIGNATURE_TYPE;
+      delete process.env.FUNCTION_TARGET;
     });
 
     test("should handle api request", () => {
-      expect(serverless("/path/to/api/functions")).toBeUndefined();
-      expect(gcp.http).toHaveBeenCalledWith("serverless", expect.any(Function));
+      serverless("/path/to/api/folder");
+      expect(gcp.http).toHaveBeenCalledWith("myTarget", expect.any(Function));
     });
   });
 });

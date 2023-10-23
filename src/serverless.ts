@@ -11,7 +11,7 @@ export type App = (
 ) => void;
 
 export default (app: App): any => {
-  if (process.env.GOOGLE_FUNCTION_TARGET) {
+  if (process.env.FUNCTION_SIGNATURE_TYPE && process.env.FUNCTION_TARGET) {
     return handlerGcp(process.env.FUNCTION_NAME || "serverless", app);
   }
 

@@ -11,9 +11,9 @@ export { ServerlessResponse } from "./response";
 type HandlerFunction = any;
 
 export default (dirname: string): HandlerFunction => {
-  if (process.env.GOOGLE_FUNCTION_TARGET) {
+  if (process.env.FUNCTION_SIGNATURE_TYPE && process.env.FUNCTION_TARGET) {
     return handlerGcp(
-      process.env.FUNCTION_NAME || "serverless",
+      process.env.FUNCTION_TARGET || "serverless",
       expressMiddleware({ apiDir: dirname, moduleLoader: require })
     );
   }
