@@ -11,26 +11,25 @@ export { ServerlessResponse } from "./response";
 type HandlerFunction = any;
 
 export default (dirname: string): HandlerFunction => {
-  if (process.env.AWS_LAMBDA_FUNCTION_NAME) {
-    return async (
-      event: RequestEvent,
-      context: Record<string, any>,
-      callback: AwsCallback
-    ) => {
-      context.callbackWaitsForEmptyEventLoop = false;
-
-      try {
-        callback(null, await handleApi(event, dirname));
-      } catch (e) {
-        handleError(callback)(e as Error);
-      }
-    };
-  }
-
   if (process.env.GOOGLE_FUNCTION_TARGET) {
     return handlerGcp(
       process.env.FUNCTION_NAME || "serverless",
       expressMiddleware({ apiDir: dirname, moduleLoader: require })
     );
   }
+
+  // Otherwise fallback to AWS.
+  return async (
+    event: RequestEvent,
+    context: Record<string, any>,
+    callback: AwsCallback
+  ) => {
+    context.callbackWaitsForEmptyEventLoop = false;
+
+    try {
+      callback(null, await handleApi(event, dirname));
+    } catch (e) {
+      handleError(callback)(e as Error);
+    }
+  };
 };

@@ -11,11 +11,10 @@ export type App = (
 ) => void;
 
 export default (app: App): any => {
-  if (process.env.AWS_LAMBDA_FUNCTION_NAME) {
-    return handlerAws(app);
-  }
-
   if (process.env.GOOGLE_FUNCTION_TARGET) {
     return handlerGcp(process.env.FUNCTION_NAME || "serverless", app);
   }
+
+  // Otherwise fallback to AWS.
+  return handlerAws(app);
 };
