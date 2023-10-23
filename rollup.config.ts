@@ -12,6 +12,7 @@ const inputs = {
   "middlewares/express": "./src/middlewares/express.ts",
   aws: "./src/handlers/aws.ts",
   gcp: "./src/handlers/gcp.ts",
+  api: "./src/serverless-api.ts",
 };
 
 export default [
@@ -35,6 +36,7 @@ export default [
       "middlewares/express": "./dist/types/middlewares/express.d.ts",
       aws: "./dist/types/handlers/aws.d.ts",
       gcp: "./dist/types/handlers/gcp.d.ts",
+      api: "./dist/types/serverless-api.d.ts",
     },
     output: {
       dir: "dist",
