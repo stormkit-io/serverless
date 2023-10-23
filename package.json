@@ -18,7 +18,6 @@
     ".": "./serverless.js",
     "./api": "./api.js",
     "./aws": "./aws.js",
-    "./gcp": "./gcp.js",
     "./middlewares": "./middlewares.js",
     "./middlewares/express": "./middlewares/express.js"
   },
