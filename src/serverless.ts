@@ -1,6 +1,5 @@
 import http from "node:http";
 import handlerAws from "./handlers/aws";
-import handlerGcp from "./handlers/gcp";
 
 export { RequestEvent } from "./request";
 export { ServerlessResponse } from "./response";
@@ -12,7 +11,8 @@ export type App = (
 
 export default (app: App): any => {
   if (process.env.FUNCTION_SIGNATURE_TYPE && process.env.FUNCTION_TARGET) {
-    return handlerGcp(process.env.FUNCTION_NAME || "serverless", app);
+    const gcp = require("@google-cloud/functions-framework");
+    return gcp.http(process.env.FUNCTION_NAME || "serverless", app);
   }
 
   // Otherwise fallback to AWS.

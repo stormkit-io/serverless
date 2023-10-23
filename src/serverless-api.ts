@@ -3,7 +3,6 @@ import type { AwsCallback } from "./handlers/aws";
 import { handleApi } from "./utils/callbacks/api";
 import { handleError } from "./utils/callbacks/error";
 import expressMiddleware from "./middlewares/express";
-import handlerGcp from "./handlers/gcp";
 
 export { RequestEvent } from "./request";
 export { ServerlessResponse } from "./response";
@@ -12,7 +11,9 @@ type HandlerFunction = any;
 
 export default (dirname: string): HandlerFunction => {
   if (process.env.FUNCTION_SIGNATURE_TYPE && process.env.FUNCTION_TARGET) {
-    return handlerGcp(
+    const gcp = require("@google-cloud/functions-framework");
+
+    return gcp.http(
       process.env.FUNCTION_TARGET || "serverless",
       expressMiddleware({ apiDir: dirname, moduleLoader: require })
     );
