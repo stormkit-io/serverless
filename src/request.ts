@@ -1,6 +1,6 @@
-import { Socket } from "net";
-import http from "http";
-import { Readable } from "stream";
+import { Socket } from "node:net";
+import http from "node:http";
+import { Readable } from "node:stream";
 
 export interface RequestEvent {
   url: string; // /relative/path?query=value#hash

@@ -1,5 +1,5 @@
-import { Socket } from "net";
-import { ServerResponse } from "http";
+import { Socket } from "node:net";
+import { ServerResponse } from "node:http";
 import httpParse from "./http-parser";
 import Request from "./request";
 import createStream from "./stream";
