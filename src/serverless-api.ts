@@ -15,7 +15,7 @@ export default (dirname: string): HandlerFunction => {
 
     return gcp.http(
       process.env.FUNCTION_TARGET || "serverless",
-      expressMiddleware({ apiDir: dirname, moduleLoader: require })
+      expressMiddleware({ apiDir: dirname, moduleLoader: (p) => require(p) })
     );
   }
 
