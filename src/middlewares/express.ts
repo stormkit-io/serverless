@@ -34,8 +34,6 @@ export default (opts: Options) => async (req: Request, res: Response) => {
 
     invokeApiHandler(handler, req, res).then((data) => {
       if (!data) {
-        res.status(200);
-        res.end();
         return;
       }
 
