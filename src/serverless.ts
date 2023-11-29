@@ -11,13 +11,7 @@ export type App = (
 
 export default (app: App): any => {
   if (process.env.FUNCTION_SIGNATURE_TYPE && process.env.FUNCTION_TARGET) {
-    try {
-      const gcp = require("@google-cloud/functions-framework");
-      return gcp.http(process.env.FUNCTION_NAME || "serverless", app);
-    } catch {
-      console.error("error while loading @google-cloud/functions-framework");
-      return;
-    }
+    return import("./handlers/gcp").then(({ default: fn }) => fn(app));
   }
 
   // Otherwise fallback to AWS.

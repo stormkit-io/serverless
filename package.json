@@ -3,6 +3,7 @@
   "version": "2.0.9",
   "description": "Export node.js applications into serverless compatible functions",
   "main": "serverless.js",
+  "module": "serverless.mjs",
   "types": "serverless.d.ts",
   "scripts": {
     "test": "jest",
@@ -14,13 +15,18 @@
     "type": "git",
     "url": "git+https://github.com/stormkit-io/serverless.git"
   },
-  "exports": {
-    ".": "./serverless.js",
-    "./api": "./api.js",
-    "./aws": "./aws.js",
-    "./middlewares": "./middlewares.js",
-    "./middlewares/express": "./middlewares/express.js"
-  },
+  "files": [
+    "serverless.js",
+    "serverless.mjs",
+    "api.js",
+    "api.mjs",
+    "aws.js",
+    "aws.mjs",
+    "middlewares.js",
+    "middlewares.mjs",
+    "middlewares/express.js",
+    "middlewares/express.mjs"
+  ],
   "keywords": [
     "serverless",
     "stormkit",

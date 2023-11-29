@@ -17,13 +17,21 @@ const inputs = {
 export default [
   ...Object.keys(inputs).map((key) =>
     defineConfig({
-      input: { [key]: inputs[key] },
+      input: inputs[key],
       external: ["vite", "@google-cloud/functions-framework"],
-      output: {
-        dir: "dist",
-        format: "cjs",
-        exports: "auto",
-      },
+      output: [
+        {
+          file: `dist/${key}.js`,
+          format: "cjs",
+          exports: "auto",
+          inlineDynamicImports: true,
+        },
+        {
+          inlineDynamicImports: true,
+          file: `dist/${key}.mjs`,
+          format: "esm",
+        },
+      ],
       plugins: [typescript(), commonjs(), nodeResolve(), jsonResolve()],
     })
   ),
