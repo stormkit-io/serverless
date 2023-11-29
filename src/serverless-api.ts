@@ -11,12 +11,17 @@ type HandlerFunction = any;
 
 export default (dirname: string): HandlerFunction => {
   if (process.env.FUNCTION_SIGNATURE_TYPE && process.env.FUNCTION_TARGET) {
-    const gcp = require("@google-cloud/functions-framework");
+    try {
+      const gcp = require("@google-cloud/functions-framework");
 
-    return gcp.http(
-      process.env.FUNCTION_TARGET || "serverless",
-      expressMiddleware({ apiDir: dirname, moduleLoader: (p) => require(p) })
-    );
+      return gcp.http(
+        process.env.FUNCTION_TARGET || "serverless",
+        expressMiddleware({ apiDir: dirname, moduleLoader: (p) => require(p) })
+      );
+    } catch {
+      console.error("error while loading @google-cloud/functions-framework");
+      return;
+    }
   }
 
   // Otherwise fallback to AWS.
