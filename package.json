@@ -15,18 +15,6 @@
     "type": "git",
     "url": "git+https://github.com/stormkit-io/serverless.git"
   },
-  "files": [
-    "serverless.js",
-    "serverless.mjs",
-    "api.js",
-    "api.mjs",
-    "aws.js",
-    "aws.mjs",
-    "middlewares.js",
-    "middlewares.mjs",
-    "middlewares/express.js",
-    "middlewares/express.mjs"
-  ],
   "keywords": [
     "serverless",
     "stormkit",
