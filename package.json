@@ -16,8 +16,14 @@
     "url": "git+https://github.com/stormkit-io/serverless.git"
   },
   "exports": {
-    "./mjs/express": "./middlewares/express.mjs",
-    "./cjs/express": "./middlewares/express.js"
+    ".": {
+      "import": "./serverless.mjs",
+      "require": "./serverless.js"
+    },
+    "./middlewares/express": {
+      "import": "./middlewares/express.mjs",
+      "require": "./middlewares/express.js"
+    }
   },
   "keywords": [
     "serverless",
