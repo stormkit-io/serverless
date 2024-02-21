@@ -20,6 +20,10 @@
       "import": "./serverless.mjs",
       "require": "./serverless.js"
     },
+    "./api": {
+      "import": "./api.mjs",
+      "require": "./api.js"
+    },
     "./middlewares/express": {
       "import": "./middlewares/express.mjs",
       "require": "./middlewares/express.js"
