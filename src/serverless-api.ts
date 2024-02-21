@@ -24,16 +24,19 @@ export default (dirname: string): HandlerFunction => {
     }
   }
 
-  // Otherwise fallback to AWS.
+  // Otherwise fallback to default syntax.
   return async (
-    event: RequestEvent,
+    event: RequestEvent | Buffer,
     context: Record<string, any>,
     callback: AwsCallback
   ) => {
     context.callbackWaitsForEmptyEventLoop = false;
 
+    // Alibaba sends a buffer instead of a string.
+    const e = Buffer.isBuffer(event) ? JSON.parse(event.toString()) : event;
+
     try {
-      callback(null, await handleApi(event, dirname));
+      callback(null, await handleApi(e, dirname));
     } catch (e) {
       handleError(callback)(e as Error);
     }

@@ -19,11 +19,14 @@ type App = (
 
 export default (app: App): AWSHandler =>
   async (event, context, callback) => {
+    // Alibaba sends a buffer instead of a string.
+    const e = Buffer.isBuffer(event) ? JSON.parse(event.toString()) : event;
+
     // https://www.jeremydaly.com/reuse-database-connections-aws-lambda/
     context.callbackWaitsForEmptyEventLoop = false;
 
     try {
-      callback(null, await handleSuccess(app, event, context));
+      callback(null, await handleSuccess(app, e, context));
     } catch (e) {
       handleError(callback)(e as Error);
     }
