@@ -57,7 +57,11 @@ export const handleApi = (
       resolve(data);
     });
 
-    const requestPath = req.url?.split("?")?.[0]?.replace("/api", "") || "/";
+    // This is what we do here:
+    // /api/my-path?query-param => /my-path
+    const requestPath =
+      req.url?.split(/[?#]/)[0].split("/").slice(2).join("/") || "/";
+
     const file = matchPath(cachedFiles, requestPath, req.method);
 
     if (file) {
