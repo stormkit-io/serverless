@@ -4,12 +4,18 @@ const originalConsole = console;
 const originalStdout = process.stdout.write;
 const originalStderr = process.stderr.write;
 
+export interface Log {
+  level: "info" | "error";
+  msg: string;
+  ts: number;
+}
+
 export class Logger {
-  stdout: string[] = [];
+  stdout: Log[] = [];
 
   constructor() {
-    const stdout = this.streamWithContext("stdout");
-    const stderr = this.streamWithContext("stderr");
+    const stdout = this.streamWithContext("info");
+    const stderr = this.streamWithContext("error");
 
     // @ts-ignore
     process.stdout.write = stdout.write.bind(stdout);
@@ -17,27 +23,32 @@ export class Logger {
     process.stderr.write = stderr.write.bind(stdout);
 
     console = new console.Console(
-      this.streamWithContext("stdout"),
-      this.streamWithContext("stderr")
+      this.streamWithContext("info"),
+      this.streamWithContext("error")
     );
   }
 
-  streamWithContext(level: "stderr" | "stdout") {
+  streamWithContext(level: "info" | "error") {
     return new stream.Writable({
       write: (
         chunk: any,
         _: BufferEncoding,
         callback: (error?: Error | null) => void
       ): void => {
-        this.stdout.push(`${level}:${chunk.toString()}`);
+        this.stdout.push({
+          ts: Date.now(),
+          msg: chunk.toString(),
+          level,
+        });
+
         callback(null);
       },
     });
   }
 
-  logs(): string {
+  logs(): Log[] {
     this.restore();
-    return this.stdout.join("");
+    return this.stdout;
   }
 
   restore() {

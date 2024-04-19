@@ -1,3 +1,4 @@
+import type { Log } from "./utils/logger";
 import { Socket } from "node:net";
 import { ServerResponse } from "node:http";
 import httpParse from "./http-parser";
@@ -10,7 +11,7 @@ export interface ServerlessResponse {
   status?: number;
   statusMessage?: string;
   headers?: Record<string, string | string[]>;
-  logs?: string;
+  logs?: Log[];
 }
 
 class Response extends ServerResponse {

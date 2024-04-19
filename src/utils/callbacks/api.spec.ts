@@ -10,7 +10,18 @@ jest.mock("~/utils/filesys", () => ({
   },
 }));
 
+const originalDateNow = Date.now;
+const ts = 1487076708000;
+
 describe("utils/callback/api.ts", () => {
+  beforeEach(() => {
+    Date.now = jest.fn(() => ts); //14.02.2017
+  });
+
+  afterEach(() => {
+    Date.now = originalDateNow;
+  });
+
   describe("handleApi", () => {
     const exampleRequest = {
       method: "GET",
@@ -53,17 +64,16 @@ describe("utils/callback/api.ts", () => {
       test("should handle returning a response body", async () => {
         const response = await handleApi(exampleRequest, "/");
 
-        const expectedLogs =
-          "stdout:this is an info\n" +
-          "stdout:this info log should be captured\n" +
-          "stdout:this is another info\n" +
-          "stderr:this error log should be captured\n" +
-          "stdout:this comes from process.stdout.write";
-
         expect(response).toEqual({
           body: "Hello world",
           status: 201,
-          logs: expectedLogs,
+          logs: [
+            { ts, msg: "this is an info\n", level: "info" },
+            { ts, msg: "this info log should be captured\n", level: "info" },
+            { ts, msg: "this is another info\n", level: "info" },
+            { ts, msg: "this error log should be captured\n", level: "error" },
+            { ts, msg: "this comes from process.stdout.write", level: "info" },
+          ],
           headers: {
             "X-Custom-Header": "Sample Project",
           },
@@ -94,7 +104,7 @@ describe("utils/callback/api.ts", () => {
           buffer: "SGkgd29ybGQ=",
           status: 200,
           statusMessage: "OK",
-          logs: "stdout:captured logs\n",
+          logs: [{ ts, msg: "captured logs\n", level: "info" }],
           headers: {
             connection: "close",
             date: expect.any(String),
