@@ -12,13 +12,6 @@ jest.mock("~/utils/filesys", () => ({
 
 describe("utils/callback/api.ts", () => {
   describe("handleApi", () => {
-    const expectedLogs =
-      "this is an info\n" +
-      "this info log should be captured\n" +
-      "this is another info\n" +
-      "this error log should be captured\n" +
-      "this comes from process.stdout.write";
-
     const exampleRequest = {
       method: "GET",
       url: "/",
@@ -60,6 +53,13 @@ describe("utils/callback/api.ts", () => {
       test("should handle returning a response body", async () => {
         const response = await handleApi(exampleRequest, "/");
 
+        const expectedLogs =
+          "stdout:this is an info\n" +
+          "stdout:this info log should be captured\n" +
+          "stdout:this is another info\n" +
+          "stderr:this error log should be captured\n" +
+          "stdout:this comes from process.stdout.write";
+
         expect(response).toEqual({
           body: "Hello world",
           status: 201,
@@ -94,7 +94,7 @@ describe("utils/callback/api.ts", () => {
           buffer: "SGkgd29ybGQ=",
           status: 200,
           statusMessage: "OK",
-          logs: "captured logs\n",
+          logs: "stdout:captured logs\n",
           headers: {
             connection: "close",
             date: expect.any(String),

@@ -8,25 +8,28 @@ export class Logger {
   stdout: string[] = [];
 
   constructor() {
-    const s = this.streamWithContext();
+    const stdout = this.streamWithContext("stdout");
+    const stderr = this.streamWithContext("stderr");
 
-    // @ts-ignore;
-    process.stdout.write = process.stderr.write = s.write.bind(s);
+    // @ts-ignore
+    process.stdout.write = stdout.write.bind(stdout);
+    // @ts-ignore
+    process.stderr.write = stderr.write.bind(stdout);
 
     console = new console.Console(
-      this.streamWithContext(),
-      this.streamWithContext()
+      this.streamWithContext("stdout"),
+      this.streamWithContext("stderr")
     );
   }
 
-  streamWithContext() {
+  streamWithContext(level: "stderr" | "stdout") {
     return new stream.Writable({
       write: (
         chunk: any,
         _: BufferEncoding,
         callback: (error?: Error | null) => void
       ): void => {
-        this.stdout.push(chunk.toString());
+        this.stdout.push(`${level}:${chunk.toString()}`);
         callback(null);
       },
     });
