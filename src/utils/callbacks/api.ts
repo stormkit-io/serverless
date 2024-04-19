@@ -70,7 +70,7 @@ export const handleApi = (
         const ret = await invokeApiHandler(mod, req, res);
 
         if (ret) {
-          resolve(ret);
+          resolve({ ...ret, logs: req.logger?.logs() });
         }
 
         return;

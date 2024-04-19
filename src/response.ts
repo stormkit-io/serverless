@@ -10,6 +10,7 @@ export interface ServerlessResponse {
   status?: number;
   statusMessage?: string;
   headers?: Record<string, string | string[]>;
+  logs?: string;
 }
 
 class Response extends ServerResponse {
@@ -42,6 +43,7 @@ class Response extends ServerResponse {
         headers: parsed.headers,
         statusMessage: parsed.statusMessage || "OK",
         status: parsed.statusCode || 200,
+        logs: req.logger?.logs(),
       });
     });
   }

@@ -1,6 +1,7 @@
 import { Socket } from "node:net";
 import http from "node:http";
 import { Readable } from "node:stream";
+import { Logger } from "./utils/logger";
 
 export interface RequestEvent {
   url: string; // /relative/path?query=value#hash
@@ -10,14 +11,12 @@ export interface RequestEvent {
   headers: http.IncomingHttpHeaders;
   remoteAddress?: string;
   remotePort?: string;
-  context?: {
-    features?: Record<string, boolean>;
-    apiKey?: string;
-    envId?: string;
-  };
+  captureLogs?: boolean;
 }
 
 class Request extends http.IncomingMessage {
+  logger?: Logger;
+
   constructor(props: RequestEvent) {
     const socket = {
       readable: false,
@@ -30,6 +29,10 @@ class Request extends http.IncomingMessage {
     } as Socket;
 
     super(socket);
+
+    if (props.captureLogs) {
+      this.logger = new Logger();
+    }
 
     // Node.js < 13 support
     this.connection = socket;

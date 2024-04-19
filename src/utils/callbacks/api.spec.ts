@@ -12,12 +12,20 @@ jest.mock("~/utils/filesys", () => ({
 
 describe("utils/callback/api.ts", () => {
   describe("handleApi", () => {
+    const expectedLogs =
+      "this is an info\n" +
+      "this info log should be captured\n" +
+      "this is another info\n" +
+      "this error log should be captured\n" +
+      "this comes from process.stdout.write";
+
     const exampleRequest = {
       method: "GET",
       url: "/",
       path: "/",
       body: "",
       headers: {},
+      captureLogs: true,
     };
 
     afterEach(() => {
@@ -30,6 +38,12 @@ describe("utils/callback/api.ts", () => {
           "/path/to/api-file.ts",
           () => ({
             default: () => {
+              console.info("this is an info");
+              console.log("this info log should be captured");
+              console.info("this is another info");
+              console.error("this error log should be captured");
+              process.stdout.write("this comes from process.stdout.write");
+
               return {
                 body: "Hello world",
                 status: 201,
@@ -49,6 +63,7 @@ describe("utils/callback/api.ts", () => {
         expect(response).toEqual({
           body: "Hello world",
           status: 201,
+          logs: expectedLogs,
           headers: {
             "X-Custom-Header": "Sample Project",
           },
@@ -78,6 +93,7 @@ describe("utils/callback/api.ts", () => {
           buffer: "SGkgd29ybGQ=",
           status: 200,
           statusMessage: "OK",
+          logs: expectedLogs,
           headers: {
             connection: "close",
             date: expect.any(String),
