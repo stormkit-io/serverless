@@ -1,33 +1,40 @@
 import stream from "node:stream";
 
-const stdout: string[] = [];
 const originalConsole = console;
 const originalStdout = process.stdout.write;
 const originalStderr = process.stderr.write;
 
-class Stdout extends stream.Writable {
-  _write(
-    chunk: any,
-    _: BufferEncoding,
-    callback: (error?: Error | null) => void
-  ): void {
-    stdout.push(chunk.toString());
-    callback(null);
-  }
-}
-
 export class Logger {
+  stdout: string[] = [];
+
   constructor() {
-    const stream = new Stdout();
+    const s = this.streamWithContext();
 
     // @ts-ignore;
-    process.stdout.write = process.stderr.write = stream.write.bind(stream);
-    console = new console.Console(new Stdout(), new Stdout());
+    process.stdout.write = process.stderr.write = s.write.bind(s);
+
+    console = new console.Console(
+      this.streamWithContext(),
+      this.streamWithContext()
+    );
+  }
+
+  streamWithContext() {
+    return new stream.Writable({
+      write: (
+        chunk: any,
+        _: BufferEncoding,
+        callback: (error?: Error | null) => void
+      ): void => {
+        this.stdout.push(chunk.toString());
+        callback(null);
+      },
+    });
   }
 
   logs(): string {
     this.restore();
-    return stdout.join("");
+    return this.stdout.join("");
   }
 
   restore() {

@@ -77,6 +77,7 @@ describe("utils/callback/api.ts", () => {
           "/path/to/api-file.ts",
           () => ({
             default: (_: http.IncomingMessage, res: http.ServerResponse) => {
+              console.log("captured logs");
               res.setHeader("X-Custom-Header", "Sample Project");
               res.write("Hi world");
               res.end();
@@ -93,7 +94,7 @@ describe("utils/callback/api.ts", () => {
           buffer: "SGkgd29ybGQ=",
           status: 200,
           statusMessage: "OK",
-          logs: expectedLogs,
+          logs: "captured logs\n",
           headers: {
             connection: "close",
             date: expect.any(String),
