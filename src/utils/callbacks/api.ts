@@ -75,7 +75,16 @@ export const handleApi = (
 
         return;
       } catch (e) {
-        console.error(e);
+        if (
+          e instanceof Error &&
+          e.message?.includes("handler is not a function")
+        ) {
+          console.error(
+            "API Function does not export a default method. See https://www.stormkit.io/docs/features/writing-api for more information."
+          );
+        } else {
+          console.error(e);
+        }
       }
     }
 
