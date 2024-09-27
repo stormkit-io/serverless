@@ -1,6 +1,6 @@
-import type { RequestEvent } from "~/request";
+import type { Serverless } from "../../../types/global";
 
-export const mockRequestEvent = (): RequestEvent => ({
+export const mockRequestEvent = (): Serverless.RequestEvent => ({
   method: "GET",
   headers: {
     "X-Custom-Header": "my-header",

@@ -1,5 +1,4 @@
-import type { RequestEvent } from "~/request";
-import type { ServerlessResponse } from "~/response";
+import type { Serverless } from "../../types/global";
 import zlib from "zlib";
 import http from "http";
 import path from "path";
@@ -9,7 +8,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { createProxyMiddleware } from "http-proxy-middleware";
-import renderer from "~/handlers/aws";
+import renderer from "../handlers/aws";
 import {
   mockRequestEvent,
   mockUploadData,
@@ -18,7 +17,7 @@ import {
 } from "~/utils/testing";
 
 describe("handlers/aws.express.ts", () => {
-  let request: RequestEvent;
+  let request: Serverless.RequestEvent;
   let app: Express;
 
   describe("basic", () => {
@@ -52,7 +51,7 @@ describe("handlers/aws.express.ts", () => {
       await renderer(app)(
         request,
         {},
-        (e: Error | null, parsed: ServerlessResponse) => {
+        (e: Error | null, parsed: Serverless.Response) => {
           expect(e).toBe(null);
           expect(decodeString(parsed.buffer)).toBe("298zf09hf012fh2");
           expect(parsed.status).toBe(200);
@@ -74,7 +73,7 @@ describe("handlers/aws.express.ts", () => {
       await renderer(app)(
         request,
         {},
-        (e: Error | null, parsed: ServerlessResponse) => {
+        (e: Error | null, parsed: Serverless.Response) => {
           expect(e).toBe(null);
 
           expect(decodeString(parsed.buffer)).toBe(
@@ -102,7 +101,7 @@ describe("handlers/aws.express.ts", () => {
         await renderer(app)(
           request,
           {},
-          (e: Error | null, parsed: ServerlessResponse) => {
+          (e: Error | null, parsed: Serverless.Response) => {
             expect(e).toBe(null);
             expect(decodeString(parsed.buffer)).toBe(mockJsFile);
           }
@@ -149,7 +148,7 @@ describe("handlers/aws.express.ts", () => {
         await renderer(app)(
           request,
           {},
-          (e: Error | null, parsed: ServerlessResponse) => {
+          (e: Error | null, parsed: Serverless.Response) => {
             expect(e).toBe(null);
             expect(parsed.headers).toEqual({
               "content-type": "application/json; charset=utf-8",
@@ -189,7 +188,7 @@ describe("handlers/aws.express.ts", () => {
       renderer(app)(
         request,
         {},
-        (e: Error | null, parsed: ServerlessResponse) => {
+        (e: Error | null, parsed: Serverless.Response) => {
           expect(e).toBe(null);
           expect(parsed.headers).toEqual(
             expect.objectContaining({
@@ -266,7 +265,7 @@ describe("handlers/aws.express.ts", () => {
       await renderer(app)(
         request,
         {},
-        (e: Error | null, parsed: ServerlessResponse) => {
+        (e: Error | null, parsed: Serverless.Response) => {
           expect(e).toBe(null);
           expect(parsed.headers?.["x-custom-proxy-header"]).toBe("1");
           expect(JSON.parse(decodeString(parsed.buffer))).toEqual({

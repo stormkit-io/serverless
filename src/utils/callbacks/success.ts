@@ -1,8 +1,7 @@
-import type { RequestEvent } from "~/request";
-import type { ServerlessResponse } from "~/response";
+import type { Serverless } from "../../../types/global";
 import http from "node:http";
-import Request from "~/request";
-import Response from "~/response";
+import Request from "../../request";
+import Response from "../../response";
 
 type App = (
   req: http.IncomingMessage,
@@ -12,9 +11,9 @@ type App = (
 
 export const handleSuccess = (
   app: App,
-  event: RequestEvent,
+  event: Serverless.RequestEvent,
   context: Record<string, any>
-): Promise<ServerlessResponse> => {
+): Promise<Serverless.Response> => {
   // Add support for express apps
   if (app.hasOwnProperty("handle")) {
     // @ts-ignore
@@ -25,7 +24,7 @@ export const handleSuccess = (
     const req = new Request(event);
     const res = new Response(req);
 
-    res.on("sk-end", (data: ServerlessResponse) => {
+    res.on("sk-end", (data: Serverless.Response) => {
       resolve(data);
     });
 

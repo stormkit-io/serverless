@@ -1,12 +1,6 @@
-import http from "node:http";
+import type { Serverless } from "../../types/global";
 
-type App = (
-  req: http.IncomingMessage,
-  res: http.ServerResponse,
-  context?: Record<string, any>
-) => void;
-
-export default (app: App) => {
+export default (app: Serverless.App) => {
   const pck = "@google-cloud/functions-framework";
   import(pck)
     .then((gcp) => {

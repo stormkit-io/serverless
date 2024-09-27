@@ -1,29 +1,21 @@
-import type { RequestEvent } from "~/request";
-import type { ServerlessResponse } from "~/response";
-import type { WalkFile } from "~/utils/filesys";
+import type { Serverless } from "../../../types/global";
+import type { WalkFile } from "../filesys";
 import path from "node:path";
-import Request from "~/request";
-import Response from "~/response";
-import { matchPath, walkTree } from "~/utils/filesys";
+import Request from "../../request";
+import Response from "../../response";
+import { matchPath, walkTree } from "../../utils/filesys";
 
 let cachedFiles: WalkFile[];
-
-export interface AlternativeSyntax {
-  body?: string;
-  headers?: Record<string, string | string[]>;
-  statusCode?: number;
-  status?: number; // Alias for statusCode
-}
 
 export const invokeApiHandler = (
   handler: any,
   req: any,
   res: any
-): Promise<ServerlessResponse | void> => {
+): Promise<Serverless.Response | void> => {
   const ret = handler?.default ? handler.default(req, res) : handler(req, res);
 
   // Allow function to return a value instead of using `response.end`
-  return Promise.resolve(ret).then((r: AlternativeSyntax) => {
+  return Promise.resolve(ret).then((r: Serverless.AlternativeSyntax) => {
     if (typeof r !== "undefined" && typeof r === "object") {
       const isBodyAnObject = typeof r.body === "object";
       const headers: Record<string, string | string[]> = {};
@@ -42,9 +34,9 @@ export const invokeApiHandler = (
 };
 
 export const handleApi = (
-  event: RequestEvent,
+  event: Serverless.RequestEvent,
   apiDir: string
-): Promise<ServerlessResponse> => {
+): Promise<Serverless.Response> => {
   if (typeof cachedFiles === "undefined") {
     cachedFiles = walkTree(apiDir);
   }
@@ -53,7 +45,7 @@ export const handleApi = (
     const req = new Request(event);
     const res = new Response(req);
 
-    res.on("sk-end", (data: ServerlessResponse) => {
+    res.on("sk-end", (data: Serverless.Response) => {
       resolve(data);
     });
 

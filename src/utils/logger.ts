@@ -1,17 +1,12 @@
+import type { Serverless } from "../../types/global";
 import stream from "node:stream";
 
 const originalConsole = console;
 const originalStdout = process.stdout.write;
 const originalStderr = process.stderr.write;
 
-export interface Log {
-  level: "info" | "error";
-  msg: string;
-  ts: number;
-}
-
 export class Logger {
-  stdout: Log[] = [];
+  stdout: Serverless.Log[] = [];
 
   constructor() {
     const stdout = this.streamWithContext("info");
@@ -46,7 +41,7 @@ export class Logger {
     });
   }
 
-  logs(): Log[] {
+  logs(): Serverless.Log[] {
     this.restore();
     return this.stdout;
   }

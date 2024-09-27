@@ -1,23 +1,13 @@
+import type { Serverless } from "../types/global";
 import { Socket } from "node:net";
 import http from "node:http";
 import { Readable } from "node:stream";
 import { Logger } from "./utils/logger";
 
-export interface RequestEvent {
-  url: string; // /relative/path?query=value#hash
-  path: string; // /relative/path
-  body: string;
-  method: string;
-  headers: http.IncomingHttpHeaders;
-  remoteAddress?: string;
-  remotePort?: string;
-  captureLogs?: boolean;
-}
-
 class Request extends http.IncomingMessage {
   logger?: Logger;
 
-  constructor(props: RequestEvent) {
+  constructor(props: Serverless.RequestEvent) {
     const socket = {
       readable: false,
       destroyed: false,
@@ -91,7 +81,7 @@ class Request extends http.IncomingMessage {
   }
 }
 
-const registerEmitters = (obj: any, props: RequestEvent) => {
+const registerEmitters = (obj: any, props: Serverless.RequestEvent) => {
   const originalListener = obj.on;
 
   obj.on = (...args: any) => {

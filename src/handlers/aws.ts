@@ -1,14 +1,12 @@
+import type { Serverless } from "../../types/global";
 import http from "node:http";
-import type { RequestEvent } from "../request";
 import { handleSuccess } from "../utils/callbacks/success";
 import { handleError } from "../utils/callbacks/error";
 
-export type AwsCallback = (e: Error | null, data: any) => void;
-
 type AWSHandler = (
-  request: RequestEvent,
+  request: Serverless.RequestEvent,
   context: Record<string, any>,
-  callback: AwsCallback
+  callback: Serverless.AwsCallback
 ) => Promise<void>;
 
 type App = (

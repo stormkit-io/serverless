@@ -1,8 +1,7 @@
-import type { RequestEvent } from "~/request";
-import type { ServerlessResponse } from "~/response";
+import type { Serverless } from "../types/global";
 import * as gcp from "@google-cloud/functions-framework";
 import serverless from "./serverless-api";
-import { mockRequestEvent } from "~/utils/testing";
+import { mockRequestEvent } from "./utils/testing";
 
 jest.mock("node:fs", () => ({
   readdirSync: () => {
@@ -15,7 +14,7 @@ jest.mock("@google-cloud/functions-framework", () => ({
 }));
 
 describe("serverless-api.ts", () => {
-  let request: RequestEvent;
+  let request: Serverless.RequestEvent;
 
   beforeEach(() => {
     request = mockRequestEvent();
@@ -35,7 +34,7 @@ describe("serverless-api.ts", () => {
         serverless("/path/to/api/functions")(
           request,
           {},
-          (error: Error | null, data: ServerlessResponse) => {
+          (error: Error | null, data: Serverless.Response) => {
             expect(error).toBe(null);
             expect(data).toMatchObject({
               status: 404,

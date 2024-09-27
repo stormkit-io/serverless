@@ -1,11 +1,7 @@
-import type { RequestEvent } from "./request";
-import type { AwsCallback } from "./handlers/aws";
+import type { Serverless } from "../types/global";
 import { handleApi } from "./utils/callbacks/api";
 import { handleError } from "./utils/callbacks/error";
 import expressMiddleware from "./middlewares/express";
-
-export { RequestEvent } from "./request";
-export { ServerlessResponse } from "./response";
 
 type HandlerFunction = any;
 
@@ -26,9 +22,9 @@ export default (dirname: string): HandlerFunction => {
 
   // Otherwise fallback to default syntax.
   return async (
-    event: RequestEvent | Buffer,
+    event: Serverless.RequestEvent | Buffer,
     context: Record<string, any>,
-    callback: AwsCallback
+    callback: Serverless.AwsCallback
   ) => {
     context.callbackWaitsForEmptyEventLoop = false;
 

@@ -1,18 +1,8 @@
-import type { Log } from "./utils/logger";
 import { Socket } from "node:net";
 import { ServerResponse } from "node:http";
 import httpParse from "./http-parser";
 import Request from "./request";
 import createStream from "./stream";
-
-export interface ServerlessResponse {
-  buffer?: string; // Raw http body base64 encoded
-  body?: string; // Response body returned as string. Either this or `buffer` is used.
-  status?: number;
-  statusMessage?: string;
-  headers?: Record<string, string | string[]>;
-  logs?: Log[];
-}
 
 class Response extends ServerResponse {
   constructor(req: Request) {

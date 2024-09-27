@@ -1,12 +1,11 @@
-import type { RequestEvent } from "~/request";
-import type { ServerlessResponse } from "~/response";
-import handler from "~/handlers/aws";
-import Request from "~/request";
-import Response from "~/response";
-import { mockRequestEvent, mockMainJs, decodeString } from "~/utils/testing";
+import type { Serverless } from "../../types/global";
+import handler from "../handlers/aws";
+import Request from "../request";
+import Response from "../response";
+import { mockRequestEvent, mockMainJs, decodeString } from "../utils/testing";
 
 describe("handlers/aws.ts", () => {
-  let request: RequestEvent;
+  let request: Serverless.RequestEvent;
 
   beforeEach(() => {
     request = mockRequestEvent();
@@ -22,7 +21,7 @@ describe("handlers/aws.ts", () => {
           address: `${res.socket?.remoteAddress}:${res.socket?.remotePort}`,
         })
       );
-    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
+    })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
       expect(e).toBe(null);
       expect(parsed.status).toBe(200);
       expect(parsed.statusMessage).toBe("OK");
@@ -52,7 +51,7 @@ describe("handlers/aws.ts", () => {
     await handler((_: Request, res: Response) => {
       res.writeHead(200, "Status OK");
       res.end();
-    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
+    })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
       expect(e).toBe(null);
       expect(parsed).toEqual(
         expect.objectContaining({
@@ -74,7 +73,7 @@ describe("handlers/aws.ts", () => {
       res.setHeader("connection", "keep-alive");
       res.writeHead(200, "Status OK");
       res.end();
-    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
+    })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
       expect(e).toBe(null);
       expect(parsed).toEqual(
         expect.objectContaining({
@@ -97,7 +96,7 @@ describe("handlers/aws.ts", () => {
       res.write("Written a text\r\n\r\n");
       res.write("Write something else");
       res.end("my-data");
-    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
+    })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
       expect(e).toBe(null);
       expect(parsed).toEqual(
         expect.objectContaining({
@@ -121,7 +120,7 @@ describe("handlers/aws.ts", () => {
       res.write("Written a text\r\n\r\n");
       res.write("Write something else");
       res.end("my-data");
-    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
+    })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
       expect(e).toBe(null);
       expect(decodeString(parsed.buffer)).toEqual(
         "Written a text\r\n\r\nWrite something elsemy-data"
@@ -147,7 +146,7 @@ describe("handlers/aws.ts", () => {
   test("should handle large responses", (done) => {
     handler((_: Request, res: Response) => {
       res.end(mockJsFile);
-    })(request, {}, (e: Error | null, parsed: ServerlessResponse) => {
+    })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
       expect(e).toBe(null);
       expect(decodeString(parsed.buffer)).toBe(mockJsFile);
       done();
