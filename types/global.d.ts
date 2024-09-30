@@ -27,8 +27,8 @@ declare namespace Serverless {
     logs?: Log[];
   }
 
-  export interface AlternativeSyntax {
-    body?: string;
+  export interface ResponseJSON {
+    body?: string | Record<string, string>;
     headers?: Record<string, string | string[]>;
     statusCode?: number;
     status?: number; // Alias for statusCode

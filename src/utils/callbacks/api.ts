@@ -15,7 +15,7 @@ export const invokeApiHandler = (
   const ret = handler?.default ? handler.default(req, res) : handler(req, res);
 
   // Allow function to return a value instead of using `response.end`
-  return Promise.resolve(ret).then((r: Serverless.AlternativeSyntax) => {
+  return Promise.resolve(ret).then((r: Serverless.ResponseJSON) => {
     if (typeof r !== "undefined" && typeof r === "object") {
       const isBodyAnObject = typeof r.body === "object";
       const headers: Record<string, string | string[]> = {};
