@@ -28,7 +28,7 @@ declare namespace Serverless {
   }
 
   export interface ResponseJSON {
-    body?: string | Record<string, string>;
+    body?: string | Record<string, any>;
     headers?: Record<string, string | string[]>;
     statusCode?: number;
     status?: number; // Alias for statusCode
