@@ -41,9 +41,6 @@
     "url": "https://github.com/stormkit-io/serverless/issues"
   },
   "homepage": "https://github.com/stormkit-io/serverless#readme",
-  "dependencies": {
-    "typescript": "^4.9.5"
-  },
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-typescript": "^7.24.7",
@@ -77,5 +74,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "typescript": "^5.7.2"
   }
 }
