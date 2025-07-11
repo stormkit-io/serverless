@@ -40,23 +40,21 @@ describe("utils/callback/api.ts", () => {
       beforeEach(() => {
         jest.mock(
           "/path/to/api-file.ts",
-          () => ({
-            default: () => {
-              console.info("this is an info");
-              console.log("this info log should be captured");
-              console.info("this is another info");
-              console.error("this error log should be captured");
-              process.stdout.write("this comes from process.stdout.write");
+          () => () => {
+            console.info("this is an info");
+            console.log("this info log should be captured");
+            console.info("this is another info");
+            console.error("this error log should be captured");
+            process.stdout.write("this comes from process.stdout.write");
 
-              return {
-                body: "Hello world",
-                status: 201,
-                headers: {
-                  "X-Custom-Header": "Sample Project",
-                },
-              };
-            },
-          }),
+            return {
+              body: "Hello world",
+              status: 201,
+              headers: {
+                "X-Custom-Header": "Sample Project",
+              },
+            };
+          },
           { virtual: true }
         );
       });
@@ -85,14 +83,12 @@ describe("utils/callback/api.ts", () => {
       beforeEach(() => {
         jest.mock(
           "/path/to/api-file.ts",
-          () => ({
-            default: (_: http.IncomingMessage, res: http.ServerResponse) => {
-              console.log("captured logs");
-              res.setHeader("X-Custom-Header", "Sample Project");
-              res.write("Hi world");
-              res.end();
-            },
-          }),
+          () => (_: http.IncomingMessage, res: http.ServerResponse) => {
+            console.log("captured logs");
+            res.setHeader("X-Custom-Header", "Sample Project");
+            res.write("Hi world");
+            res.end();
+          },
           { virtual: true }
         );
       });

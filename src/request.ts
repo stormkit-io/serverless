@@ -24,9 +24,6 @@ class Request extends http.IncomingMessage {
       this.logger = new Logger();
     }
 
-    // Node.js < 13 support
-    this.connection = socket;
-
     props.headers = props.headers || {};
 
     Object.assign(this, {

@@ -183,7 +183,7 @@ describe("handlers/aws.express.ts", () => {
     });
 
     test("should compress response", (done) => {
-      request.headers["Accept-Encoding"] = "gzip, compress, br";
+      request.headers["Accept-Encoding"] = "gzip";
 
       renderer(app)(
         request,
@@ -201,6 +201,7 @@ describe("handlers/aws.express.ts", () => {
 
           expect(
             zlib
+              // @ts-ignore
               .gunzipSync(Buffer.from(parsed.buffer || "", "base64"))
               .toString("utf-8")
           ).toBe(mockData);

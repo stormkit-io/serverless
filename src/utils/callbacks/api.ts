@@ -12,7 +12,10 @@ export const invokeApiHandler = (
   req: any,
   res: any
 ): Promise<Serverless.Response | void> => {
-  const ret = handler?.default ? handler.default(req, res) : handler(req, res);
+  const ret =
+    typeof handler?.default === "function"
+      ? handler.default(req, res)
+      : handler(req, res);
 
   // Allow function to return a value instead of using `response.end`
   return Promise.resolve(ret).then((r: Serverless.ResponseJSON) => {
@@ -58,7 +61,7 @@ export const handleApi = (
 
     if (file) {
       try {
-        const mod = require(path.join(file.path, file.name));
+        const mod = await import(path.join(file.path, file.name));
         const ret = await invokeApiHandler(mod, req, res);
 
         if (ret) {
