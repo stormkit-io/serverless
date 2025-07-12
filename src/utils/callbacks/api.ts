@@ -61,7 +61,7 @@ export const handleApi = (
 
     if (file) {
       try {
-        const mod = await import(path.join(file.path, file.name));
+        const mod = await import(`./${path.join(file.path, file.name)}`);
         const ret = await invokeApiHandler(mod, req, res);
 
         if (ret) {
