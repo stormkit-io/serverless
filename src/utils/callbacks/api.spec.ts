@@ -109,5 +109,38 @@ describe("utils/callback/api.ts", () => {
         });
       });
     });
+
+    describe("commonjs", () => {
+      beforeEach(() => {
+        jest.mock(
+          "./path/to/api-file.ts",
+          () => ({
+            default: (_: http.IncomingMessage, res: http.ServerResponse) => {
+              console.log("captured logs");
+              res.setHeader("X-Custom-Header", "Sample Project");
+              res.write("Hi world");
+              res.end();
+            },
+          }),
+          { virtual: true }
+        );
+      });
+
+      test("should handle returning a response body", async () => {
+        const response = await handleApi(exampleRequest, "/");
+
+        expect(response).toEqual({
+          buffer: "SGkgd29ybGQ=",
+          status: 200,
+          statusMessage: "OK",
+          logs: [{ ts, msg: "captured logs\n", level: "info" }],
+          headers: {
+            connection: "close",
+            date: expect.any(String),
+            "x-custom-header": "Sample Project",
+          },
+        });
+      });
+    });
   });
 });

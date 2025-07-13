@@ -15,7 +15,11 @@ export const invokeApiHandler = (
   const ret =
     typeof handler?.default === "function"
       ? handler.default(req, res)
-      : handler(req, res);
+      : // This is a hack for commonjsjs modules that export a default
+        // function as a property of the default export.
+        typeof handler?.default?.default === "function"
+        ? handler.default.default(req, res)
+        : handler(req, res);
 
   // Allow function to return a value instead of using `response.end`
   return Promise.resolve(ret).then((r: Serverless.ResponseJSON) => {
