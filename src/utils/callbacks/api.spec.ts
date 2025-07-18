@@ -39,7 +39,7 @@ describe("utils/callback/api.ts", () => {
     describe("with returned object", () => {
       beforeEach(() => {
         jest.mock(
-          "./path/to/api-file.ts",
+          "/path/to/api-file.ts",
           () => () => {
             console.info("this is an info");
             console.log("this info log should be captured");
@@ -82,7 +82,7 @@ describe("utils/callback/api.ts", () => {
     describe("with response.end", () => {
       beforeEach(() => {
         jest.mock(
-          "./path/to/api-file.ts",
+          "/path/to/api-file.ts",
           () => (_: http.IncomingMessage, res: http.ServerResponse) => {
             console.log("captured logs");
             res.setHeader("X-Custom-Header", "Sample Project");
@@ -113,7 +113,7 @@ describe("utils/callback/api.ts", () => {
     describe("commonjs", () => {
       beforeEach(() => {
         jest.mock(
-          "./path/to/api-file.ts",
+          "/path/to/api-file.ts",
           () => ({
             default: (_: http.IncomingMessage, res: http.ServerResponse) => {
               console.log("captured logs");
