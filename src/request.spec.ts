@@ -19,4 +19,17 @@ describe("request.ts", () => {
         done();
       });
   });
+
+  test("should contain both method and httpMethod", () => {
+    const req = new Request({
+      url: "/",
+      path: "/",
+      headers: {},
+      method: "POST",
+      body: "Hello world",
+    });
+
+    expect(req.method).toBe("POST");
+    expect(req.httpMethod).toBe("POST");
+  });
 });

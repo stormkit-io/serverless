@@ -6,6 +6,7 @@ import { Logger } from "./utils/logger";
 
 class Request extends http.IncomingMessage {
   logger?: Logger;
+  httpMethod?: string;
 
   constructor(props: Serverless.RequestEvent) {
     const socket = {
@@ -32,6 +33,7 @@ class Request extends http.IncomingMessage {
       httpVersionMajor: "1",
       httpVersionMinor: "1",
       httpVersion: "1.1",
+      httpMethod: props.method,
       method: props.method,
       headers: Object.keys(props.headers).reduce(
         (obj: Record<string, string>, key: string) => {
