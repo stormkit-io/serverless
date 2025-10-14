@@ -4,7 +4,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import jsonResolve from "@rollup/plugin-json";
 
-const inputs = {
+const inputs: Record<string, string> = {
   router: "./src/router.ts",
   serverless: "./src/serverless.ts",
   middlewares: "./src/middlewares/index.ts",
