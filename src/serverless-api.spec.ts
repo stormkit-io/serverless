@@ -1,5 +1,4 @@
 import type { Serverless } from "../types/global";
-import * as gcp from "@google-cloud/functions-framework";
 import serverless from "./serverless-api";
 import { mockRequestEvent } from "./utils/testing";
 
@@ -7,10 +6,6 @@ jest.mock("node:fs", () => ({
   readdirSync: () => {
     return [];
   },
-}));
-
-jest.mock("@google-cloud/functions-framework", () => ({
-  http: jest.fn(),
 }));
 
 describe("serverless-api.ts", () => {
@@ -45,23 +40,6 @@ describe("serverless-api.ts", () => {
           }
         );
       });
-    });
-  });
-
-  describe("gcp", () => {
-    beforeEach(() => {
-      process.env.FUNCTION_SIGNATURE_TYPE = "cloudevent";
-      process.env.FUNCTION_TARGET = "myTarget";
-    });
-
-    afterEach(() => {
-      delete process.env.FUNCTION_SIGNATURE_TYPE;
-      delete process.env.FUNCTION_TARGET;
-    });
-
-    test("should handle api request", () => {
-      serverless("/path/to/api/folder");
-      expect(gcp.http).toHaveBeenCalledWith("myTarget", expect.any(Function));
     });
   });
 });

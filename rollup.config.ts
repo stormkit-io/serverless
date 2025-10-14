@@ -17,7 +17,7 @@ export default [
   ...Object.keys(inputs).map((key) =>
     defineConfig({
       input: inputs[key],
-      external: ["vite", "@google-cloud/functions-framework"],
+      external: ["vite"],
       output: [
         {
           file: `dist/${key}.js`,
