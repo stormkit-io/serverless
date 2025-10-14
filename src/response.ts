@@ -19,6 +19,7 @@ class Response extends ServerResponse {
     const response = this;
 
     this.on("prefinish", () => {
+      // @ts-ignore
       const parsed = httpParse(Buffer.concat(stream.buffer));
 
       parsed.headers.connection = "close";

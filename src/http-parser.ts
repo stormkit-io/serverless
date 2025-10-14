@@ -44,6 +44,7 @@ export default (buffer?: Buffer): ParsedMessage => {
   const body: Uint8Array[] = [];
 
   parser.onBody = function (chunk: Buffer, offset: number, length: number) {
+    // @ts-ignore
     body.push(chunk.slice(offset, offset + length));
   };
 
