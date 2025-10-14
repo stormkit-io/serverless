@@ -4,7 +4,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import jsonResolve from "@rollup/plugin-json";
 
-const inputs: Record<string, string> = {
+const inputs = {
   router: "./src/router.ts",
   serverless: "./src/serverless.ts",
   middlewares: "./src/middlewares/index.ts",
@@ -16,6 +16,7 @@ const inputs: Record<string, string> = {
 export default [
   ...Object.keys(inputs).map((key) =>
     defineConfig({
+      // @ts-ignore
       input: inputs[key],
       external: ["vite"],
       output: [
