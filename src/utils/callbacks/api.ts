@@ -12,17 +12,18 @@ export const invokeApiHandler = (
   req: any,
   res: any
 ): Promise<Serverless.Response | void> => {
-  const ret =
-    typeof handler?.default === "function"
-      ? handler.default(req, res)
-      : // This is a hack for commonjsjs modules that export a default
-        // function as a property of the default export.
-        typeof handler?.default?.default === "function"
-        ? handler.default.default(req, res)
-        : handler(req, res);
+  // Support for both named and default exports: handler
+  // Support for both default exports
+  const fn = [
+    handler?.handler,
+    handler?.default?.handler,
+    handler?.default,
+    handler?.default?.default, // This is a hack for commonjsjs modules that export a default fn as a property of the default export.
+    handler,
+  ].find((f) => typeof f === "function");
 
   // Allow function to return a value instead of using `response.end`
-  return Promise.resolve(ret).then((r: Serverless.ResponseJSON) => {
+  return Promise.resolve(fn(req, res)).then((r: Serverless.ResponseJSON) => {
     if (typeof r !== "undefined" && typeof r === "object") {
       const isBodyAnObject = typeof r.body === "object";
       const headers: Record<string, string | string[]> = {};
