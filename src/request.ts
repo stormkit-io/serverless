@@ -7,7 +7,7 @@ import { Logger } from "./utils/logger";
 class Request extends http.IncomingMessage {
   logger?: Logger;
   httpMethod?: string;
-  _event: Serverless.RequestEvent;
+  __sk_event?: Serverless.RequestEvent;
 
   constructor(props: Serverless.RequestEvent) {
     const socket = {
@@ -26,7 +26,7 @@ class Request extends http.IncomingMessage {
       this.logger = new Logger();
     }
 
-    this._event = props;
+    this.__sk_event = props;
     props.headers = props.headers || {};
 
     Object.assign(this, {
@@ -82,7 +82,7 @@ class Request extends http.IncomingMessage {
   }
 
   get body(): string {
-    return this._event.body;
+    return this.__sk_event?.body || "";
   }
 }
 

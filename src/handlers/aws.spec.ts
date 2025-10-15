@@ -1,4 +1,5 @@
 import type { Serverless } from "../../types/global";
+import http from "node:http";
 import handler from "../handlers/aws";
 import Request from "../request";
 import Response from "../response";
@@ -12,7 +13,7 @@ describe("handlers/aws.ts", () => {
   });
 
   test("request should receive correct properties", (done) => {
-    handler((req: Request, res: Response) => {
+    handler((req: http.IncomingMessage, res: http.ServerResponse) => {
       res.end(
         JSON.stringify({
           url: req.url,
@@ -48,7 +49,7 @@ describe("handlers/aws.ts", () => {
   test("should return connection:close when specified", async () => {
     request.headers.Connection = "Close";
 
-    await handler((_: Request, res: Response) => {
+    await handler((_: http.IncomingMessage, res: http.ServerResponse) => {
       res.writeHead(200, "Status OK");
       res.end();
     })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
@@ -67,7 +68,7 @@ describe("handlers/aws.ts", () => {
   });
 
   test("should write headers", (done) => {
-    handler((_: Request, res: Response) => {
+    handler((_: http.IncomingMessage, res: http.ServerResponse) => {
       // This should be ignored.
       res.setHeader("set-cookie", ["cookie1=value1", "cookie2=value2"]);
       res.setHeader("connection", "keep-alive");
@@ -92,7 +93,7 @@ describe("handlers/aws.ts", () => {
   });
 
   test("should write string responses", (done) => {
-    handler((_: Request, res: Response) => {
+    handler((_: http.IncomingMessage, res: http.ServerResponse) => {
       res.write("Written a text\r\n\r\n");
       res.write("Write something else");
       res.end("my-data");
@@ -114,7 +115,7 @@ describe("handlers/aws.ts", () => {
   });
 
   test("should handle transfer-encoding: chunked", (done) => {
-    handler((_: Request, res: Response) => {
+    handler((_: http.IncomingMessage, res: http.ServerResponse) => {
       // This should be ignored
       res.setHeader("transfer-encoding", "chunked");
       res.write("Written a text\r\n\r\n");
@@ -144,7 +145,7 @@ describe("handlers/aws.ts", () => {
   const mockJsFile = mockMainJs();
 
   test("should handle large responses", (done) => {
-    handler((_: Request, res: Response) => {
+    handler((_: http.IncomingMessage, res: http.ServerResponse) => {
       res.end(mockJsFile);
     })(request, {}, (e: Error | null, parsed: Serverless.Response) => {
       expect(e).toBe(null);
