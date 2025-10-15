@@ -20,6 +20,18 @@ describe("request.ts", () => {
       });
   });
 
+  test("should allow accessing body directly", () => {
+    const req = new Request({
+      url: "/",
+      path: "/",
+      headers: {},
+      method: "POST",
+      body: "Hello world",
+    });
+
+    expect(req.body).toBe("Hello world");
+  });
+
   test("should contain both method and httpMethod", () => {
     const req = new Request({
       url: "/",
