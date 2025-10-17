@@ -1,13 +1,15 @@
 import * as http from "node:http";
 import { handleApi } from "./api";
+import * as filesys from "~/utils/filesys";
 
 jest.mock("~/utils/filesys", () => ({
   walkTree: () => {
     return [];
   },
-  matchPath: () => {
-    return { path: "/path/to/", name: "api-file.ts" };
-  },
+  matchPath: jest.fn().mockImplementation(() => ({
+    path: "/path/to/",
+    name: "api-file.ts",
+  })),
 }));
 
 const originalDateNow = Date.now;
@@ -25,11 +27,14 @@ describe("utils/callback/api.ts", () => {
   describe("handleApi", () => {
     const exampleRequest = {
       method: "GET",
-      url: "/",
+      url: "/my-api/prefix/resource",
       path: "/",
       body: "",
       headers: {},
       captureLogs: true,
+      context: {
+        apiPrefix: "/my-api/prefix",
+      },
     };
 
     afterEach(() => {
@@ -60,6 +65,7 @@ describe("utils/callback/api.ts", () => {
       });
 
       test("should handle returning a response body", async () => {
+        const matchPathSpy = jest.spyOn(filesys, "matchPath");
         const response = await handleApi(exampleRequest, "/");
 
         expect(response).toEqual({
@@ -76,6 +82,9 @@ describe("utils/callback/api.ts", () => {
             "X-Custom-Header": "Sample Project",
           },
         });
+
+        // Then use it in your test
+        expect(matchPathSpy).toHaveBeenCalledWith([], "/resource", "GET");
       });
     });
 

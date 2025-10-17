@@ -4,10 +4,15 @@ import http from "node:http";
 import { Readable } from "node:stream";
 import { Logger } from "./utils/logger";
 
+interface Context {
+  apiPrefix?: string;
+}
+
 class Request extends http.IncomingMessage {
   logger?: Logger;
   httpMethod?: string;
   __sk_event?: Serverless.RequestEvent;
+  __sk__context?: Context;
 
   constructor(props: Serverless.RequestEvent) {
     const socket = {
@@ -27,6 +32,7 @@ class Request extends http.IncomingMessage {
     }
 
     this.__sk_event = props;
+    this.__sk__context = props.context;
     props.headers = props.headers || {};
 
     Object.assign(this, {

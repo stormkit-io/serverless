@@ -1,7 +1,6 @@
 import type { Serverless } from "../../../types/global";
 import type { WalkFile } from "../filesys";
 import path from "node:path";
-import fs from "node:fs";
 import Request from "../../request";
 import Response from "../../response";
 import { matchPath, walkTree } from "../../utils/filesys";
@@ -42,10 +41,6 @@ export const invokeApiHandler = (
   });
 };
 
-interface StormkitConfig {
-  prefixes?: string[];
-}
-
 export const handleApi = (
   event: Serverless.RequestEvent,
   apiDir: string
@@ -62,26 +57,15 @@ export const handleApi = (
       resolve(data);
     });
 
-    let config: StormkitConfig = {};
-
-    try {
-      const data = fs.readFileSync(path.join(apiDir, "stormkit.json"), "utf-8");
-      config = JSON.parse(data) as StormkitConfig;
-    } catch {
-      // No config
-    }
-
     // Remove query and hash from url
     let requestPath =
       "/" + ((req.url || "").split(/[\?#]/)[0] || "").replace(/^\/+/, "");
 
-    if (config.prefixes) {
-      for (const prefix of config.prefixes) {
-        if (requestPath.startsWith(prefix)) {
-          requestPath = requestPath.slice(prefix.length) || "/";
-          break;
-        }
-      }
+    // Remove API prefix if set
+    const apiPrefix = req.__sk__context?.apiPrefix || "";
+
+    if (apiPrefix && requestPath.startsWith(apiPrefix)) {
+      requestPath = requestPath.slice(apiPrefix.length) || "/";
     }
 
     const file = matchPath(cachedFiles, requestPath, req.method);

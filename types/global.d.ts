@@ -16,6 +16,7 @@ declare namespace Serverless {
     remoteAddress?: string;
     remotePort?: string;
     captureLogs?: boolean;
+    context?: Record<string, any>;
   }
 
   export interface Response {
