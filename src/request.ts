@@ -35,8 +35,21 @@ class Request extends http.IncomingMessage {
     this.__sk__context = props.context;
     props.headers = props.headers || {};
 
+    let url: string = "/";
+
+    // Parse URL to ensure it's in the correct format
+    if (props.url) {
+      try {
+        const parsedUrl = new URL(props.url, "http://localhost");
+        url = parsedUrl.pathname + parsedUrl.search;
+      } catch {
+        // If URL parsing fails, assume it's already a relative path
+        url = props.url.startsWith("/") ? props.url : "/" + props.url;
+      }
+    }
+
     Object.assign(this, {
-      url: props.url,
+      url,
       complete: true,
       httpVersionMajor: "1",
       httpVersionMinor: "1",
